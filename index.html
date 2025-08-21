@@ -2,228 +2,353 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>DentalOS • PWA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>DentMaster • DentalOS PWA</title>
   <meta name="theme-color" content="#0b1020" />
 
-  <!-- PWA manifest + iOS -->
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/tooth-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="DentalOS">
-  <meta name="apple-mobile-web-app-status-bar-style" content="#0b1020">
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <!-- iOS support -->
+  <link rel="apple-touch-icon" href="icons/tooth-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DentalOS" />
 
   <style>
     :root{
-      --bg:#0b1020; --text:#eaf3ff; --muted:#b6c2d1; --accent:#00e5ff;
-      --glass:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));
-      --blur:18px;
+      --bg:#0b1020; --glass:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      --text:#eaf3ff; --muted:#b6c2d1; --accent:#00e5ff; --radius:16px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family: ui-rounded, "Vazirmatn","IRANSans", system-ui, -apple-system;
+      margin:0; font-family: ui-rounded,"Vazirmatn","IRANSans",system-ui;
       color:var(--text);
       background:
-        radial-gradient(60rem 60rem at 10% -10%, rgba(61,199,255,.12), transparent 60%),
-        radial-gradient(50rem 50rem at 110% 10%, rgba(0,229,255,.10), transparent 60%),
+        radial-gradient(60rem 60rem at 10% -10%, rgba(61,136,255,.12), transparent 40%),
+        radial-gradient(50rem 50rem at 110% 10%, rgba(0,229,255,.10), transparent 45%),
         linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0b1020 100%);
-      overflow-x:hidden;
     }
-    .header{position:sticky; top:0; z-index:50; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 clamp(12px,3vw,18px); backdrop-filter:blur(var(--blur)) saturate(140%); background:var(--glass); border-bottom:1px solid rgba(255,255,255,.06)}
-    .brand{display:flex; align-items:center; gap:12px; font-weight:700}
-    .brand img{width:28px;height:28px}
-    .chip{font-size:.75rem; color:var(--muted); padding:.25rem .6rem; border:1px solid rgba(255,255,255,.12); border-radius:999px}
-    main{max-width:960px; margin:24px auto; padding:0 16px}
-    .card{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:16px; backdrop-filter:blur(10px)}
-    .row{display:flex; gap:8px; flex-wrap:wrap}
-    input,button{height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.04); color:var(--text); padding:0 12px; outline:none}
-    input{flex:1; min-width:140px}
-    button{cursor:pointer}
-    .btn{background:linear-gradient(180deg, rgba(0,229,255,.35), rgba(0,229,255,.18)); border:1px solid rgba(0,229,255,.35)}
+    header{
+      position:sticky; top:0; z-index:10; backdrop-filter:blur(18px) saturate(140%);
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      border-bottom:1px solid rgba(255,255,255,.14);
+    }
+    .wrap{max-width:960px;margin:0 auto;padding:16px}
+    h1{margin:0; font-size:22px; display:flex; align-items:center; gap:10px}
+    h1 .dot{width:8px;height:8px;border-radius:50%;background:#2bd576;box-shadow:0 0 0 4px rgba(43,213,118,.15)}
+    .card{
+      background:var(--glass); border:1px solid rgba(255,255,255,.14);
+      border-radius:var(--radius); padding:16px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    input,button{
+      height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06); color:var(--text); padding:0 12px; outline:none;
+    }
+    input::placeholder{color:var(--muted)}
+    button{cursor:pointer; background:linear-gradient(180deg, rgba(0,229,255,.35), rgba(0,229,255,.18)); border-color:rgba(0,229,255,.45)}
+    button.secondary{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.18)}
+    table{width:100%; border-collapse:separate; border-spacing:0 10px}
+    td,th{padding:12px 14px; text-align:right}
+    tbody tr{background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12)}
+    tbody tr{border-radius:12px}
+    .pill{font-size:12px;color:#0b1020;background:#00e5ff;padding:4px 10px;border-radius:999px}
     .muted{color:var(--muted)}
-    table{width:100%; border-collapse:separate; border-spacing:0 10px; margin-top:12px}
-    td,th{padding:10px 12px; text-align:right}
-    tr{background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.10)}
-    tr td:first-child, tr th:first-child{border-radius:12px 0 0 12px}
-    tr td:last-child, tr th:last-child{border-radius:0 12px 12px 0}
-    .pill{padding:.2rem .55rem; border:1px solid rgba(255,255,255,.14); border-radius:999px; font-size:.7rem}
-    .footer{opacity:.65; font-size:.8rem; margin:28px 0 16px}
-    .ok{color:#2bd98c} .warn{color:#ffd166}
+    .ok{color:#2bd576}
+    .warn{color:#ffb020}
+    .error{color:#ff5973}
+    .row{display:flex; gap:10px; align-items:center}
+    .spacer{flex:1}
+    footer{color:var(--muted); font-size:12px; padding:20px 0; text-align:center}
+    .hide{display:none}
   </style>
 </head>
-
 <body>
-  <header class="header">
-    <div class="brand">
-      <img src="icons/tooth-128.png" alt="DentalOS">
-      <div>DentalOS <span class="chip">PWA</span></div>
+  <header>
+    <div class="wrap row">
+      <h1><span class="dot" id="onlineDot"></span> DentMaster 2025</h1>
+      <div class="spacer"></div>
+      <span id="versionTag" class="pill">v<span id="v">1</span></span>
     </div>
-    <div class="muted" id="swState">در حال آماده‌سازی…</div>
   </header>
 
-  <main>
-    <section class="card" id="statusCard">
-      <div class="row" style="justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-weight:700">مدیریت قیمت‌ها</div>
-          <div class="muted">همگام‌سازی آنلاین (Supabase Realtime) + کار آفلاین (Service Worker) + بک‌آپ خودکار</div>
-        </div>
-        <div><span class="pill" id="onlinePill">وضعیت شبکه: —</span></div>
+  <main class="wrap">
+    <!-- فرم مدیریت قیمت‌ها -->
+    <section class="card" style="margin-top:14px">
+      <div class="row toolbar">
+        <input id="name" placeholder="نام خدمت (مثلاً: کامپوزیت)" style="flex:2" />
+        <input id="price" placeholder="قیمت (تومان)" inputmode="numeric" style="flex:1" />
+        <button id="addBtn">افزودن/ثبت</button>
+        <button id="syncBtn" class="secondary">سینک آفلاین‌ها</button>
       </div>
-
-      <div class="row" style="margin-top:12px">
-        <input id="nameInput" placeholder="نام خدمت (مثلاً ویزیت)" />
-        <input id="priceInput" type="number" inputmode="decimal" placeholder="قیمت (تومان)" />
-        <button id="addBtn" class="btn">ثبت / بروزرسانی</button>
-        <button id="refreshBtn">بارگذاری مجدد</button>
+      <div class="muted" style="margin-top:8px">
+        تغییراتی که منشی یا شما ثبت کنید، بلافاصله روی تمام گوشی‌ها نمایش داده می‌شود (Realtime). در حالت آفلاین، در صف ذخیره می‌شود و با اتصال، خودکار اعمال می‌گردد.
       </div>
+    </section>
 
-      <table id="tbl">
+    <!-- جدول قیمت‌ها -->
+    <section class="card" style="margin-top:14px">
+      <div class="row" style="margin-bottom:6px">
+        <strong>لیست قیمت‌ها</strong>
+        <div class="spacer"></div>
+        <span id="status" class="muted">در حال بارگذاری…</span>
+      </div>
+      <table>
         <thead>
           <tr>
             <th>نام خدمت</th>
-            <th>قیمت</th>
-            <th>بروزرسانی</th>
-            <th>عملیات</th>
+            <th>قیمت (تومان)</th>
+            <th class="muted">ویرایش</th>
           </tr>
         </thead>
-        <tbody id="tbody"></tbody>
+        <tbody id="rows"></tbody>
       </table>
-
-      <div class="footer muted">
-        <div>• اگر اینترنت قطع شود، داده‌های کش‌شده آفلاین نمایش داده می‌شوند. با اتصال مجدد، همگام‌سازی انجام می‌گردد.</div>
-        <div>• تغییرات بین همهٔ گوشی‌ها به صورت زنده با Supabase Realtime پخش می‌شود.</div>
-      </div>
     </section>
+
+    <!-- پیام‌ها -->
+    <section id="msg" class="card hide" style="margin-top:14px"></section>
   </main>
 
-  <!-- Supabase JS (UMD) -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <footer>
+    DentalOS • PWA • Supabase Realtime • Backup & Auto-Update
+  </footer>
 
-  <!-- اختیاری: اگر backup.js داری، این خط را نگه دار -->
-  <script type="module" src="./backup.js"></script>
-
+  <!-- رجیستر سرویس‌ورکر برای آفلاین + آپدیت خودکار -->
   <script>
-    /***** 1) Service Worker ثبت + آپدیت خودکار *****/
     (function registerSW(){
       if(!('serviceWorker' in navigator)) return;
       window.addEventListener('load', async () => {
         try{
-          const reg = await navigator.serviceWorker.register('./service-worker.js', {scope:'./'});
-          const el = document.getElementById('swState');
-          el.textContent = 'آماده برای آفلاین ✅';
-
-          function skipWait(w){ w.postMessage({type:'SKIP_WAITING'}); }
-          if(reg.waiting) skipWait(reg.waiting);
-          reg.addEventListener('updatefound', ()=>{
+          const reg = await navigator.serviceWorker.register('/service-worker.js', {scope:'/'});
+          // اگر SW جدید نصب شد -> سریع فعال شود
+          const kick = w => w && w.postMessage({type:'SKIP_WAITING'});
+          if(reg.waiting) kick(reg.waiting);
+          reg.addEventListener('updatefound', () => {
             const nw = reg.installing;
-            nw && nw.addEventListener('statechange', ()=>{
-              if(nw.state==='installed' && navigator.serviceWorker.controller){
-                skipWait(nw);
-                nw.addEventListener('statechange', ()=>{
-                  if(nw.state==='activated') location.reload();
+            nw && nw.addEventListener('statechange', () => {
+              if(nw.state === 'installed' && navigator.serviceWorker.controller){
+                kick(nw);
+                nw.addEventListener('statechange', () => {
+                  if(nw.state === 'activated') location.reload();
                 });
               }
             });
           });
-          navigator.serviceWorker.addEventListener('controllerchange', ()=>{/* نرم ریفرش هندل شد */});
-        }catch(e){
-          console.warn('SW register failed', e);
-          document.getElementById('swState').textContent = 'SW ناموفق ⚠️';
-        }
+        }catch(e){ console.warn('SW register fail', e); }
       });
     })();
+  </script>
 
-    /***** 2) وضعیت آنلاین/آفلاین *****/
-    const onlinePill = document.getElementById('onlinePill');
-    function renderNet(){ onlinePill.textContent = 'وضعیت شبکه: ' + (navigator.onLine?'آنلاین':'آفلاین'); onlinePill.className = 'pill ' + (navigator.onLine?'ok':'warn'); }
-    addEventListener('online', renderNet); addEventListener('offline', renderNet); renderNet();
+  <!-- برنامه: Supabase CRUD + Realtime + صف آفلاین + چک نسخه -->
+  <script type="module">
+    // --- تنظیمات آنلاین/آفلاین (چراغ بالا)
+    const onlineDot = document.getElementById('onlineDot');
+    function paintOnline(){
+      const on = navigator.onLine;
+      onlineDot.style.background = on ? '#2bd576' : '#ffb020';
+      onlineDot.style.boxShadow  = on ? '0 0 0 4px rgba(43,213,118,.15)' : '0 0 0 4px rgba(255,176,32,.15)';
+    }
+    window.addEventListener('online', paintOnline);
+    window.addEventListener('offline', paintOnline);
+    paintOnline();
 
-    /***** 3) Supabase مقداردهی (با مقادیر شما) *****/
-    const SUPABASE_URL = "https://poubooxbvvzbwyjlfmaj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ";
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      realtime: { params: { eventsPerSecond: 20 } }
-    });
+    // --- نسخه برنامه از latest.json
+    const APP_VERSION_KEY = 'dentos_version';
+    const vEl = document.getElementById('v');
+    async function checkVersion(){
+      try{
+        const res = await fetch('/latest.json', {cache:'no-store'});
+        if(!res.ok) return;
+        const j = await res.json(); // {version: "x.y.z"}
+        const cur = localStorage.getItem(APP_VERSION_KEY) || '0';
+        vEl.textContent = j.version || '1';
+        if(j.version && j.version !== cur){
+          localStorage.setItem(APP_VERSION_KEY, j.version);
+          // اگر SW تازه فعال شده خودش ریفرش می‌کند؛ اینجا هم محافظه‌کارانه رفرش نرم:
+          setTimeout(()=>location.reload(), 300);
+        }
+      }catch{}
+    }
+    checkVersion();
 
-    /***** 4) CRUD + Realtime برای جدول prices *****/
+    // --- اتصال Supabase (URL/KEY شما)
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    const supabaseUrl = 'https://poubooxbvvzbwyjlfmaj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ';
+    const sb = createClient(supabaseUrl, supabaseKey);
+
+    // --- عناصر UI
     const $ = s => document.querySelector(s);
-    const tbody = $('#tbody');
-    let editingId = null;
+    const rowsEl = $('#rows');
+    const nameEl = $('#name');
+    const priceEl = $('#price');
+    const statusEl = $('#status');
+    const msgEl = $('#msg');
+    const syncBtn = $('#syncBtn');
+    const addBtn = $('#addBtn');
 
-    async function loadPrices(){
-      const { data, error } = await sb.from('prices').select('*').order('updated_at', {ascending:false});
-      if(error){ console.warn(error); return; }
-      renderRows(data || []);
+    // --- صف آفلاین (CRUD queue)
+    const QKEY = 'dentalos_offline_queue';
+    const readQ = () => JSON.parse(localStorage.getItem(QKEY) || '[]');
+    const saveQ = q => localStorage.setItem(QKEY, JSON.stringify(q));
+
+    async function flushQueue(){
+      let q = readQ();
+      if(!q.length) return toast('چیزی برای سینک نیست.','ok');
+      for (const job of q){
+        try{
+          if(job.op === 'insert'){
+            const {error} = await sb.from('prices').insert([job.row]);
+            if(error) throw error;
+          }else if(job.op === 'update'){
+            const {error} = await sb.from('prices').update(job.patch).eq('id', job.id);
+            if(error) throw error;
+          }else if(job.op === 'delete'){
+            const {error} = await sb.from('prices').delete().eq('id', job.id);
+            if(error) throw error;
+          }
+        }catch(e){
+          console.warn('queue fail item keeps', job, e);
+          return toast('سینک ناقص. بعداً دوباره امتحان می‌کنیم.','warn');
+        }
+        // موفق بود -> از صف حذف
+        q = readQ().filter(x => !(x.ts === job.ts));
+        saveQ(q);
+      }
+      toast('سینک آفلاین‌ها کامل شد.','ok');
     }
 
-    function renderRows(rows){
-      tbody.innerHTML = '';
-      rows.forEach(row=>{
+    // آنلاین که شدیم، صف را خالی کن
+    window.addEventListener('online', () => flushQueue());
+
+    // --- UI Helpers
+    function rial(n){ try{ return (+n).toLocaleString('fa-IR'); }catch{ return n } }
+    function toast(t,type='ok'){
+      msgEl.textContent = t;
+      msgEl.className = 'card ' + (type==='ok'?'': type==='warn'?'warn':'error');
+      msgEl.classList.remove('hide');
+      setTimeout(()=>msgEl.classList.add('hide'), 3000);
+    }
+
+    // --- رندر جدول
+    function renderRows(list){
+      rowsEl.innerHTML = '';
+      if(!list || !list.length){
+        rowsEl.innerHTML = `<tr><td colspan="3" class="muted">هنوز قیمتی ثبت نشده است.</td></tr>`;
+        return;
+      }
+      list.forEach(row => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${row.name}</td>
-          <td>${Number(row.price).toLocaleString('fa-IR')}</td>
-          <td class="muted">${new Date(row.updated_at).toLocaleString('fa-IR')}</td>
-          <td>
-            <button data-act="edit" data-id="${row.id}">ویرایش</button>
-            <button data-act="del" data-id="${row.id}">حذف</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
+          <td>${rial(row.price)}</td>
+          <td class="row">
+            <button class="secondary" data-edit="${row.id}">ویرایش</button>
+            <button class="secondary" data-del="${row.id}">حذف</button>
+          </td>`;
+        rowsEl.appendChild(tr);
       });
     }
 
-    tbody.addEventListener('click', async (e)=>{
-      const btn = e.target.closest('button'); if(!btn) return;
-      const id = btn.dataset.id;
-      if(btn.dataset.act === 'edit'){
-        const tds = btn.closest('tr').children;
-        $('#nameInput').value = tds[0].textContent.trim();
-        $('#priceInput').value = tds[1].textContent.replace(/[^\d]/g,'');
-        editingId = id;
-        $('#nameInput').focus();
-      }else if(btn.dataset.act === 'del'){
-        const ok = confirm('حذف این ردیف؟');
-        if(!ok) return;
-        const { error } = await sb.from('prices').delete().eq('id', id);
-        if(error) alert('خطا در حذف: '+error.message);
-      }
-    });
+    // --- بارگذاری اولیه
+    async function load(){
+      statusEl.textContent = 'در حال بارگذاری…';
+      const {data, error} = await sb.from('prices').select('*').order('id', {ascending:true});
+      if(error){ statusEl.textContent = 'خطا در بارگذاری'; return; }
+      renderRows(data);
+      statusEl.textContent = `تعداد ${data.length} مورد`;
+    }
+    await load();
 
-    document.getElementById('addBtn').addEventListener('click', async ()=>{
-      const name = document.getElementById('nameInput').value.trim();
-      const price = Number(document.getElementById('priceInput').value || 0);
-      if(!name || !price) return alert('نام و قیمت را کامل کنید');
-      if(editingId){
-        const { error } = await sb.from('prices').update({ name, price, updated_at:new Date().toISOString() }).eq('id', editingId);
-        if(error) return alert('خطا در بروزرسانی: '+error.message);
-        editingId = null;
-      }else{
-        const { error } = await sb.from('prices').insert([{ name, price }]);
-        if(error) return alert('خطا در ثبت: '+error.message);
-      }
-      document.getElementById('nameInput').value = '';
-      document.getElementById('priceInput').value = '';
-    });
+    // --- Realtime: هر تغییری روی همه دیوایس‌ها پخش شود
+    sb.channel('public:prices')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, payload => {
+        // به‌سادگی دوباره لیست را می‌گیریم؛ برای پروژه بزرگ میشه بهینه‌تر کرد
+        load();
+      })
+      .subscribe(status => console.log('RT status:', status));
 
-    document.getElementById('refreshBtn').addEventListener('click', loadPrices);
+    // --- ایجاد/به‌روزرسانی
+    addBtn.addEventListener('click', async () => {
+      const name = nameEl.value.trim();
+      const price = +(priceEl.value || '').toString().replace(/[^\d]/g,'');
+      if(!name || !price) return toast('نام و قیمت را کامل وارد کنید','warn');
 
-    // Realtime: هر تغییری در جدول prices بیاید، جدول را تازه کن
-    (function realtimeSub(){
+      // اگر قبلاً رکوردی با همین نام داریم -> آپدیت
+      const { data: exist } = await sb.from('prices').select('id').eq('name', name).limit(1);
       try{
-        sb.channel('prices-stream')
-          .on('postgres_changes', { event:'*', schema:'public', table:'prices' }, () => loadPrices())
-          .subscribe(()=>{/* status changes handled implicitly */});
-      }catch(e){ console.warn('realtime sub failed', e); }
-    })();
+        if(!navigator.onLine){
+          // صف آفلاین
+          const ts = Date.now();
+          if(exist && exist.length){
+            const job = {op:'update', id: exist[0].id, patch:{price, updated_at:new Date().toISOString()}, ts};
+            saveQ([...readQ(), job]);
+          }else{
+            const job = {op:'insert', row:{name, price, updated_at:new Date().toISOString()}, ts};
+            saveQ([...readQ(), job]);
+          }
+          toast('بدون اینترنت: در صف آفلاین ذخیره شد.','warn');
+          // خوش‌بینانه رندر کن
+          load();
+          return;
+        }
 
-    // لود اولیه
-    loadPrices();
+        if(exist && exist.length){
+          const {error} = await sb.from('prices').update({price, updated_at:new Date().toISOString()}).eq('id', exist[0].id);
+          if(error) throw error;
+          toast('ویرایش شد.','ok');
+        }else{
+          const {error} = await sb.from('prices').insert([{name, price}]);
+          if(error) throw error;
+          toast('افزوده شد.','ok');
+        }
+        nameEl.value = ''; priceEl.value = '';
+      }catch(e){
+        console.error(e);
+        toast('خطا در ذخیره‌سازی','error');
+      }
+    });
 
-    /***** 5) هوک بک‌آپ (اگر backup.js موجود باشد) *****/
-    if(window.backupInit) window.backupInit({ onPull: loadPrices });
+    // --- حذف / ویرایش با delegation
+    rowsEl.addEventListener('click', async (ev) => {
+      const t = ev.target;
+      if(t.dataset.del){
+        const id = +t.dataset.del;
+        if(!confirm('حذف شود؟')) return;
+
+        if(!navigator.onLine){
+          const ts = Date.now();
+          saveQ([...readQ(), {op:'delete', id, ts}]);
+          toast('حذف در صف آفلاین.','warn');
+          load();
+          return;
+        }
+        const {error} = await sb.from('prices').delete().eq('id', id);
+        if(error) return toast('خطا در حذف','error');
+        toast('حذف شد.','ok');
+      }
+      if(t.dataset.edit){
+        const id = +t.dataset.edit;
+        const newPrice = prompt('قیمت جدید (تومان):');
+        if(!newPrice) return;
+        const p = +(newPrice || '').toString().replace(/[^\d]/g,'');
+        if(!navigator.onLine){
+          const ts = Date.now();
+          saveQ([...readQ(), {op:'update', id, patch:{price:p, updated_at:new Date().toISOString()}, ts}]);
+          toast('ویرایش در صف آفلاین.','warn');
+          load();
+          return;
+        }
+        const {error} = await sb.from('prices').update({price:p, updated_at:new Date().toISOString()}).eq('id', id);
+        if(error) return toast('خطا در ویرایش','error');
+        toast('ویرایش شد.','ok');
+      }
+    });
+
+    // --- دکمه سینک دستی
+    syncBtn.addEventListener('click', flushQueue);
   </script>
 </body>
 </html>
