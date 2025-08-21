@@ -2,240 +2,228 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>DentMaster • DentalOS PWA</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>DentalOS • PWA</title>
   <meta name="theme-color" content="#0b1020" />
 
-  <!-- Manifest + Icons -->
-  <link rel="manifest" href="/manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="/icons/tooth-192.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="DentalOS" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+  <!-- PWA manifest + iOS -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/tooth-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="DentalOS">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#0b1020">
 
   <style>
-    :root{--bg:#0b1020;--text:#eaf3ff;--muted:#b6c2d1;--accent:#00e5ff;--stroke:rgba(255,255,255,.22);--glass:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));--radius:16px;--blur:18px}
-    *{box-sizing:border-box} html,body{height:100%}
-    body{
-      margin:0;color:var(--text);font-family:"Vazirmatn",ui-rounded,system-ui;
-      background:
-        radial-gradient(60rem 60rem at 10% -10%, rgba(61,115,255,.12), transparent 40%),
-        radial-gradient(50rem 50rem at 110% 10%, rgba(0,229,255,.10), transparent 40%),
-        linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0b1020 100%);
-      -webkit-tap-highlight-color:transparent
+    :root{
+      --bg:#0b1020; --text:#eaf3ff; --muted:#b6c2d1; --accent:#00e5ff;
+      --glass:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));
+      --blur:18px;
     }
-    header{position:sticky;top:0;z-index:10;backdrop-filter:blur(var(--blur)) saturate(140%);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));border-bottom:1px solid var(--stroke)}
-    .wrap{max-width:960px;margin:0 auto;padding:16px}
-    h1{margin:0;font-size:20px} .tag{display:inline-block;margin-top:6px;padding:4px 10px;border:1px solid var(--stroke);border-radius:999px;font-size:12px;color:var(--muted)}
-    .panel{margin-top:16px;padding:16px;border:1px solid var(--stroke);border-radius:var(--radius);background:var(--glass)}
-    .grid{display:grid;gap:16px} @media(min-width:800px){.grid{grid-template-columns:1.2fr .8fr}}
-    table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--stroke);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
-    thead th{background:rgba(255,255,255,.06);text-align:right;color:var(--muted);font-weight:600;padding:10px}
-    tbody td{padding:10px;border-top:1px solid var(--stroke)}
-    .controls{display:flex;gap:8px;flex-wrap:wrap}
-    button{appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,.06);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer}
-    button.primary{background:linear-gradient(90deg,#00e5ff44,#00e5ff22)}
-    .ok{color:#75f2a0}.warn{color:#ffd66b}
-    footer{color:var(--muted);font-size:12px;margin:24px auto 32px;opacity:.8}
-    code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:6px;border:1px solid var(--stroke)}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-rounded, "Vazirmatn","IRANSans", system-ui, -apple-system;
+      color:var(--text);
+      background:
+        radial-gradient(60rem 60rem at 10% -10%, rgba(61,199,255,.12), transparent 60%),
+        radial-gradient(50rem 50rem at 110% 10%, rgba(0,229,255,.10), transparent 60%),
+        linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0b1020 100%);
+      overflow-x:hidden;
+    }
+    .header{position:sticky; top:0; z-index:50; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 clamp(12px,3vw,18px); backdrop-filter:blur(var(--blur)) saturate(140%); background:var(--glass); border-bottom:1px solid rgba(255,255,255,.06)}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700}
+    .brand img{width:28px;height:28px}
+    .chip{font-size:.75rem; color:var(--muted); padding:.25rem .6rem; border:1px solid rgba(255,255,255,.12); border-radius:999px}
+    main{max-width:960px; margin:24px auto; padding:0 16px}
+    .card{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:16px; backdrop-filter:blur(10px)}
+    .row{display:flex; gap:8px; flex-wrap:wrap}
+    input,button{height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.04); color:var(--text); padding:0 12px; outline:none}
+    input{flex:1; min-width:140px}
+    button{cursor:pointer}
+    .btn{background:linear-gradient(180deg, rgba(0,229,255,.35), rgba(0,229,255,.18)); border:1px solid rgba(0,229,255,.35)}
+    .muted{color:var(--muted)}
+    table{width:100%; border-collapse:separate; border-spacing:0 10px; margin-top:12px}
+    td,th{padding:10px 12px; text-align:right}
+    tr{background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.10)}
+    tr td:first-child, tr th:first-child{border-radius:12px 0 0 12px}
+    tr td:last-child, tr th:last-child{border-radius:0 12px 12px 0}
+    .pill{padding:.2rem .55rem; border:1px solid rgba(255,255,255,.14); border-radius:999px; font-size:.7rem}
+    .footer{opacity:.65; font-size:.8rem; margin:28px 0 16px}
+    .ok{color:#2bd98c} .warn{color:#ffd166}
   </style>
 </head>
+
 <body>
-  <header>
-    <div class="wrap">
-      <h1>DentMaster • DentalOS</h1>
-      <div class="tag">PWA • Offline • Auto‑Update • Realtime • Cloud/Local Backup</div>
+  <header class="header">
+    <div class="brand">
+      <img src="icons/tooth-128.png" alt="DentalOS">
+      <div>DentalOS <span class="chip">PWA</span></div>
     </div>
+    <div class="muted" id="swState">در حال آماده‌سازی…</div>
   </header>
 
-  <main class="wrap grid">
-    <!-- لیست قیمت‌ها -->
-    <section class="panel">
-      <h2 style="margin:0 0 10px">لیست قیمت</h2>
-      <table id="priceTable">
-        <thead><tr><th>خدمت</th><th>قیمت (تومان)</th></tr></thead>
-        <tbody><!-- بوسیلهٔ Supabase پر می‌شود --></tbody>
+  <main>
+    <section class="card" id="statusCard">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:700">مدیریت قیمت‌ها</div>
+          <div class="muted">همگام‌سازی آنلاین (Supabase Realtime) + کار آفلاین (Service Worker) + بک‌آپ خودکار</div>
+        </div>
+        <div><span class="pill" id="onlinePill">وضعیت شبکه: —</span></div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <input id="nameInput" placeholder="نام خدمت (مثلاً ویزیت)" />
+        <input id="priceInput" type="number" inputmode="decimal" placeholder="قیمت (تومان)" />
+        <button id="addBtn" class="btn">ثبت / بروزرسانی</button>
+        <button id="refreshBtn">بارگذاری مجدد</button>
+      </div>
+
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th>نام خدمت</th>
+            <th>قیمت</th>
+            <th>بروزرسانی</th>
+            <th>عملیات</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
       </table>
 
-      <div class="controls" style="margin-top:12px">
-        <button id="btnAdd" class="primary">افزودن سطر نمونه</button>
-        <button id="btnSync">بازخوانی از سرور</button>
-        <button id="btnBackupLocal">بک‌آپ محلی</button>
-        <button id="btnRestoreLocal">بازیابی محلی</button>
-        <button id="btnBackupCloud">بک‌آپ ابری</button>
-        <button id="btnRestoreCloud">بازیابی ابری</button>
+      <div class="footer muted">
+        <div>• اگر اینترنت قطع شود، داده‌های کش‌شده آفلاین نمایش داده می‌شوند. با اتصال مجدد، همگام‌سازی انجام می‌گردد.</div>
+        <div>• تغییرات بین همهٔ گوشی‌ها به صورت زنده با Supabase Realtime پخش می‌شود.</div>
       </div>
-
-      <div class="tag" id="syncState" style="margin-top:10px">وضعیت همگام‌سازی: <span class="warn">در حال اتصال…</span></div>
-      <p style="margin-top:8px;color:var(--muted);font-size:12px">
-        هر تغییری در جدول <b>prices</b> به‌صورت آنی با Supabase Realtime روی تمام گوشی‌ها پخش می‌شود.
-      </p>
     </section>
-
-    <!-- وضعیت PWA / نسخه -->
-    <aside class="panel">
-      <h3 style="margin:0 0 10px">وضعیت برنامه</h3>
-      <ul style="margin:0 0 12px 18px">
-        <li>شبکه: <span id="netState">…</span></li>
-        <li>نسخهٔ کش: <code id="swVer">ـ</code></li>
-        <li>آخرین بک‌آپ محلی: <code id="bkTimeLocal">ـ</code></li>
-        <li>آخرین بک‌آپ ابری: <code id="bkTimeCloud">ـ</code></li>
-      </ul>
-      <div class="controls">
-        <button id="btnCheckUpdate">بررسی آپدیت</button>
-      </div>
-    </aside>
   </main>
 
-  <footer class="wrap">© 2025 DentalOS • Liquid‑Glass UI</footer>
+  <!-- Supabase JS (UMD) -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
-  <!-- Supabase v2 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- اختیاری: اگر backup.js داری، این خط را نگه دار -->
+  <script type="module" src="./backup.js"></script>
 
   <script>
-    /* ---------------- PWA: Service Worker (auto-update) ---------------- */
+    /***** 1) Service Worker ثبت + آپدیت خودکار *****/
     (function registerSW(){
       if(!('serviceWorker' in navigator)) return;
       window.addEventListener('load', async () => {
         try{
-          const reg = await navigator.serviceWorker.register('/service-worker.js',{scope:'/'});
-          const activateNow = sw => {
-            if(!sw) return;
-            sw.postMessage({type:'SKIP_WAITING'});
-            sw.addEventListener('statechange', ()=>{ if(sw.state==='activated') location.reload(); });
-          };
-          if (reg.waiting) activateNow(reg.waiting);
+          const reg = await navigator.serviceWorker.register('./service-worker.js', {scope:'./'});
+          const el = document.getElementById('swState');
+          el.textContent = 'آماده برای آفلاین ✅';
+
+          function skipWait(w){ w.postMessage({type:'SKIP_WAITING'}); }
+          if(reg.waiting) skipWait(reg.waiting);
           reg.addEventListener('updatefound', ()=>{
             const nw = reg.installing;
             nw && nw.addEventListener('statechange', ()=>{
-              if(nw.state==='installed' && navigator.serviceWorker.controller) activateNow(nw);
+              if(nw.state==='installed' && navigator.serviceWorker.controller){
+                skipWait(nw);
+                nw.addEventListener('statechange', ()=>{
+                  if(nw.state==='activated') location.reload();
+                });
+              }
             });
           });
-          navigator.serviceWorker.addEventListener('controllerchange', ()=>console.log('SW controlling'));
-        }catch(e){ console.warn('SW register failed', e); }
+          navigator.serviceWorker.addEventListener('controllerchange', ()=>{/* نرم ریفرش هندل شد */});
+        }catch(e){
+          console.warn('SW register failed', e);
+          document.getElementById('swState').textContent = 'SW ناموفق ⚠️';
+        }
       });
     })();
-    document.getElementById('btnCheckUpdate').onclick = async () => {
-      if(!('serviceWorker' in navigator)) return;
-      const regs = await navigator.serviceWorker.getRegistrations();
-      regs.forEach(r => r.update());
-      alert('بررسی آپدیت انجام شد؛ در صورت وجود نسخهٔ جدید خودکار اعمال می‌شود.');
-    };
 
-    /* ---------------- کوچک‌های UI ---------------- */
+    /***** 2) وضعیت آنلاین/آفلاین *****/
+    const onlinePill = document.getElementById('onlinePill');
+    function renderNet(){ onlinePill.textContent = 'وضعیت شبکه: ' + (navigator.onLine?'آنلاین':'آفلاین'); onlinePill.className = 'pill ' + (navigator.onLine?'ok':'warn'); }
+    addEventListener('online', renderNet); addEventListener('offline', renderNet); renderNet();
+
+    /***** 3) Supabase مقداردهی (با مقادیر شما) *****/
+    const SUPABASE_URL = "https://poubooxbvvzbwyjlfmaj.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      realtime: { params: { eventsPerSecond: 20 } }
+    });
+
+    /***** 4) CRUD + Realtime برای جدول prices *****/
     const $ = s => document.querySelector(s);
-    const tbody = $('#priceTable tbody');
-    const setNet = () => $('#netState').textContent = navigator.onLine ? 'آنلاین ✅' : 'آفلاین ⛓️';
-    window.addEventListener('online', setNet); window.addEventListener('offline', setNet); setNet();
+    const tbody = $('#tbody');
+    let editingId = null;
 
-    /* ---------------- Supabase Setup ---------------- */
-    const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";    // ← جایگزین کن
-    const SUPABASE_ANON_KEY = "YOUR-ANON-KEY";                   // ← جایگزین کن
-    const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    /* ---------------- CRUD: جدول prices ---------------- */
     async function loadPrices(){
-      const { data, error } = await supa.from('prices').select('*').order('id',{ascending:true});
+      const { data, error } = await sb.from('prices').select('*').order('updated_at', {ascending:false});
       if(error){ console.warn(error); return; }
-      renderRows(data||[]);
+      renderRows(data || []);
     }
+
     function renderRows(rows){
-      tbody.innerHTML='';
-      rows.forEach(r=>{
+      tbody.innerHTML = '';
+      rows.forEach(row=>{
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.name ?? ''}</td><td>${r.price ?? ''}</td>`;
+        tr.innerHTML = `
+          <td>${row.name}</td>
+          <td>${Number(row.price).toLocaleString('fa-IR')}</td>
+          <td class="muted">${new Date(row.updated_at).toLocaleString('fa-IR')}</td>
+          <td>
+            <button data-act="edit" data-id="${row.id}">ویرایش</button>
+            <button data-act="del" data-id="${row.id}">حذف</button>
+          </td>
+        `;
         tbody.appendChild(tr);
       });
     }
-    $('#btnSync').onclick = loadPrices;
-    $('#btnAdd').onclick = async ()=>{
-      const name = prompt('نام خدمت؟','جرم‌گیری');
-      if(!name) return;
-      const price = prompt('قیمت؟','350000');
-      const { error } = await supa.from('prices').insert({ name, price });
-      if(error) alert('خطا: '+error.message);
-    };
 
-    // Realtime: هر تغییری روی همهٔ دستگاه‌ها اعمال می‌شود
-    function mountRealtime(){
-      const channel = supa.channel('prices-rt')
-        .on('postgres_changes',{event:'*',schema:'public',table:'prices'},payload=>{
-          loadPrices();  // تمیزترین راه
-          autoBackupLocal(); // بعد از تغییر، بک‌آپ محلی
-          queueCloudBackup(); // و صف بک‌آپ ابری
-        })
-        .subscribe(status=>{
-          $('#syncState').innerHTML = 'وضعیت همگام‌سازی: ' + (status === 'SUBSCRIBED' ? '<span class="ok">همگام</span>' : '<span class="warn">در انتظار…</span>');
-        });
-    }
+    tbody.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button'); if(!btn) return;
+      const id = btn.dataset.id;
+      if(btn.dataset.act === 'edit'){
+        const tds = btn.closest('tr').children;
+        $('#nameInput').value = tds[0].textContent.trim();
+        $('#priceInput').value = tds[1].textContent.replace(/[^\d]/g,'');
+        editingId = id;
+        $('#nameInput').focus();
+      }else if(btn.dataset.act === 'del'){
+        const ok = confirm('حذف این ردیف؟');
+        if(!ok) return;
+        const { error } = await sb.from('prices').delete().eq('id', id);
+        if(error) alert('خطا در حذف: '+error.message);
+      }
+    });
 
-    /* ---------------- Backup محلی ---------------- */
-    const BK_LOCAL_KEY = 'dentalos_backup_v1';
-    function collectRows(){
-      return [...tbody.querySelectorAll('tr')].map(tr=>{
-        const tds = tr.querySelectorAll('td');
-        return { name: tds[0]?.textContent || '', price: tds[1]?.textContent || '' };
-      });
-    }
-    function backupLocal(){
-      const payload = { ts: Date.now(), rows: collectRows() };
-      localStorage.setItem(BK_LOCAL_KEY, JSON.stringify(payload));
-      $('#bkTimeLocal').textContent = new Date(payload.ts).toLocaleString('fa-IR');
-      return payload;
-    }
-    function restoreLocal(){
-      const raw = localStorage.getItem(BK_LOCAL_KEY);
-      if(!raw) return alert('بک‌آپ محلی پیدا نشد');
-      const payload = JSON.parse(raw||'{}');
-      renderRows(payload.rows||[]);
-      $('#bkTimeLocal').textContent = new Date(payload.ts||Date.now()).toLocaleString('fa-IR');
-    }
-    function autoBackupLocal(){ try{ backupLocal(); }catch{} }
-    $('#btnBackupLocal').onclick = backupLocal;
-    $('#btnRestoreLocal').onclick = restoreLocal;
-    setInterval(autoBackupLocal, 30000); // هر ۳۰ ثانیه
+    document.getElementById('addBtn').addEventListener('click', async ()=>{
+      const name = document.getElementById('nameInput').value.trim();
+      const price = Number(document.getElementById('priceInput').value || 0);
+      if(!name || !price) return alert('نام و قیمت را کامل کنید');
+      if(editingId){
+        const { error } = await sb.from('prices').update({ name, price, updated_at:new Date().toISOString() }).eq('id', editingId);
+        if(error) return alert('خطا در بروزرسانی: '+error.message);
+        editingId = null;
+      }else{
+        const { error } = await sb.from('prices').insert([{ name, price }]);
+        if(error) return alert('خطا در ثبت: '+error.message);
+      }
+      document.getElementById('nameInput').value = '';
+      document.getElementById('priceInput').value = '';
+    });
 
-    /* ---------------- Backup ابری (Supabase Storage) ---------------- */
-    // پیش‌نیاز: Bucket به نام `backups` و سیاست‌هایی که اجازه INSERT/UPDATE/SELECT روی مسیر clinic/* بدهد.
-    const BK_BUCKET = 'backups';
-    const BK_OBJECT_KEY = 'clinic/backup.json'; // اگر می‌خواهی برای هر مطب جدا باشد، مسیر را سفارشی کن
+    document.getElementById('refreshBtn').addEventListener('click', loadPrices);
 
-    async function backupCloud(){
-      const payload = backupLocal(); // از خروجی بک‌آپ محلی استفاده می‌کنیم
-      const blob = new Blob([JSON.stringify(payload)], {type:'application/json'});
-      const { error } = await supa.storage.from(BK_BUCKET).upload(BK_OBJECT_KEY, blob, { upsert:true, contentType:'application/json' });
-      if(error) throw error;
-      $('#bkTimeCloud').textContent = new Date(payload.ts).toLocaleString('fa-IR');
-      return true;
-    }
-    async function restoreCloud(){
-      const { data, error } = await supa.storage.from(BK_BUCKET).download(BK_OBJECT_KEY);
-      if(error){ alert('بازیابی ابری ناموفق: '+error.message); return; }
-      const payload = JSON.parse(await data.text());
-      renderRows(payload.rows||[]);
-      $('#bkTimeCloud').textContent = new Date(payload.ts||Date.now()).toLocaleString('fa-IR');
-    }
-    $('#btnBackupCloud').onclick = async ()=>{ try{ await backupCloud(); alert('بک‌آپ ابری ذخیره شد.'); }catch(e){ alert('خطا در بک‌آپ ابری: '+e.message); } };
-    $('#btnRestoreCloud').onclick = restoreCloud;
-
-    // بک‌آپ ابری دوره‌ای (هر ۲ دقیقه) فقط وقتی آنلاینیم
-    let cloudTimer = setInterval(()=>{ if(navigator.onLine) queueCloudBackup(); }, 120000);
-    let cloudQueued = false;
-    function queueCloudBackup(){
-      if(cloudQueued) return;
-      cloudQueued = true;
-      setTimeout(async ()=>{ cloudQueued=false; if(navigator.onLine){ try{ await backupCloud(); }catch{} } }, 5000);
-    }
-
-    /* ---------------- شروع ---------------- */
-    (async function start(){
-      await loadPrices();
-      mountRealtime();
-      try{ const keys = await caches.keys(); $('#swVer').textContent = keys.join(', '); }catch{}
+    // Realtime: هر تغییری در جدول prices بیاید، جدول را تازه کن
+    (function realtimeSub(){
+      try{
+        sb.channel('prices-stream')
+          .on('postgres_changes', { event:'*', schema:'public', table:'prices' }, () => loadPrices())
+          .subscribe(()=>{/* status changes handled implicitly */});
+      }catch(e){ console.warn('realtime sub failed', e); }
     })();
+
+    // لود اولیه
+    loadPrices();
+
+    /***** 5) هوک بک‌آپ (اگر backup.js موجود باشد) *****/
+    if(window.backupInit) window.backupInit({ onPull: loadPrices });
   </script>
 </body>
 </html>
