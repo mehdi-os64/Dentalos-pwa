@@ -497,13 +497,24 @@ EL('#themeSel').onchange=e=>{ const v=e.target.value; if(v==='aqua'){ document.b
 #calHost .day.today::after{content:"امروز";position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:.7em;color:#0b3868;opacity:.9;font-weight:700}
 </style>
 <script>
-/* تقویم ساده اضافه + هدر زنده (نسخه سبک) */
+/* تقویم ساده اضافه + هدر زنده (نسخه سبک) ——— اصلاح: y%100 → gy%100 */
 (function(){
   const host = document.getElementById('calHost'); if(!host) return;
   const PDS=['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹']; const toFa=s=>String(s).replace(/[0-9]/g,d=>PDS[d]);
   const MONTH = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
-  function d2j(gy,gm,gd){const gdm=[0,31,59,90,120,151,181,212,243,273,304,334];gy-=1600;gm--;gd--;let g=365*gy+((gy+3)>>2)-((gy+99)>>2)+((gy+399)>>2);g+=gdm[gm]+gd;if(gm>1&&((gy%4==0&&gy%100!=0)||(gy%400==0)))g++;let j=g-79;let np=(j/12053)|0;j%=12053;let jy=979+33*np+4*((j/1461)|0);j%=1461;if(j>=366){jy+=(j-1)/365|0;j=(j-1)%365}let jm=(j<186)?1+(j/31|0):7+((j-186)/30|0);let jd=1+((j<186)?(j%31):((j-186)%30));return[jy,jm,jd]}
-  function j2g(jy,jm,jd){jy-=979;let j=365*jy+((jy/33)|0)*8+(((jy%33)+3)/4|0);for(let i=1;i<jm;i++)j+=i<=6?31:i<=11?30:29;j+=jd-1;let g=j+79;let gy=1600+400*((g/146097)|0);g%=146097;if(g>=36525){g--;gy+=100*((g/36524)|0);g%=36524;if(g>=365)g--}gy+=4*((g/1461)|0);g%=1461;if(g>=366){g--;gy+=(g/365)|0;g%=365}function gml(y,m){return[31,((y%4==0&&gy%100!=0)||(y%400==0))?29:28,31,30,31,30,31,31,30,31,30,31][m-1]}let gm=1;for(;gm<=12&&g>=gml(gy,gm);gm++){g-=gml(gy,gm)}let gd=g+1;return[gy,gm,gd]}
+  function d2j(gy,gm,gd){
+    const gdm=[0,31,59,90,120,151,181,212,243,273,304,334]; gy-=1600; gm--; gd--;
+    let g=365*gy+((gy+3)>>2)-((gy+99)>>2)+((gy+399)>>2);
+    g+=gdm[gm]+gd;
+    if(gm>1&&((gy%4==0&&gy%100!=0)||(gy%400==0))) g++;
+    let j=g-79, np=(j/12053)|0; j%=12053;
+    let jy=979+33*np+4*((j/1461)|0); j%=1461;
+    if(j>=366){ jy+=(j-1)/365|0; j=(j-1)%365 }
+    let jm=(j<186)?1+(j/31|0):7+((j-186)/30|0);
+    let jd=1+((j<186)?(j%31):((j-186)%30));
+    return[jy,jm,jd]
+  }
+  function j2g(jy,jm,jd){jy-=979;let j=365*jy+((jy/33)|0)*8+(((jy%33)+3)/4|0);for(let i=1;i<jm;i++)j+=i<=6?31:i<=11?30:29;j+=jd-1;let g=j+79;let gy=1600+400*((g/146097)|0);g%=146097;if(g>=36525){g--;gy+=100*((g/36524)|0);g%=36524;if(g>=365)g--}gy+=4*((g/1461)|0);g%=1461;if(g>=366){g--;gy+=(g/365)|0;g%=365}function gml(y,m){return[31,((y%4==0&&y%100!=0)||(y%400==0))?29:28,31,30,31,30,31,31,30,31,30,31][m-1]}let gm=1;for(;gm<=12&&g>=gml(gy,gm);gm++){g-=gml(gy,gm)}let gd=g+1;return[gy,gm,gd]}
   function jMonthLen(jy,jm){let njy=jy, njm=jm+1; if(njm===13){ njy++; njm=1; } const a=j2g(jy,jm,1), b=j2g(njy,njm,1); const da=new Date(a[0],a[1]-1,a[2]), db=new Date(b[0],b[1]-1,b[2]); return Math.round((db-da)/86400000);}
   // هدر زنده
   const head=document.createElement('div'); head.className='jalali-live-header'; head.innerHTML='<span class="wday">—</span><span class="date">—</span><span class="month">—</span><span class="year">—</span><span class="clock">--:--:--</span>'; host.prepend(head);
@@ -513,6 +524,13 @@ EL('#themeSel').onchange=e=>{ const v=e.target.value; if(v==='aqua'){ document.b
     head.querySelector('.wday').textContent=['شنبه','یک‌شنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه'][(now.getDay()+1)%7]; }
   tick(); setInterval(tick,1000);
 })();
+</script>
+
+<!-- ثبت سرویس‌ورکر (برای PWA/کش) -->
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+}
 </script>
 
 </body>
