@@ -1,0 +1,18 @@
+{
+  "version": "4.3.0-online-autoupdate",
+  "notes": "آنلاین فقط + آپدیت خودکار + آیتم‌های منوی همبرگری (Software Update, Backup & Sync)",
+  "cssAppend": ".fab-backup,#backup-fab,.backup-fab{display:none!important;}",
+  "jsAppend": "(function(){try{const SETTINGS_KEY='dentalos_settings_2025';function g(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY))||{}}catch(_){return{}}}function s(v){localStorage.setItem(SETTINGS_KEY,JSON.stringify(v))}(async function(){try{localStorage.setItem('ONLINE_ONLY','1');if('serviceWorker'in navigator){const regs=await navigator.serviceWorker.getRegistrations();for(const r of regs){try{await r.unregister()}catch(e){}}}if(window.caches){try{const names=await caches.keys();for(const n of names){await caches.delete(n)}}catch(e){}}}catch(e){}})();async function applyPack(p){try{if(p.cssAppend){const st=document.createElement('style');st.textContent=p.cssAppend;document.documentElement.appendChild(st)}if(p.jsAppend){try{(0,eval)(p.jsAppend)}catch(e){console.warn('Patch eval',e)}}if(p.settingsDelta){const cur=g();s(Object.assign({},cur,p.settingsDelta))}if(p.version){localStorage.setItem('app_version',p.version)}}catch(e){console.error('[Update] failed',e)}}function ensureMenu(){const c=document.querySelector('#hamburgerMenu,#menu,#sideMenu,.hamburger-menu,.drawer-menu,nav .menu,aside .menu,.app-menu');if(!c)return;function add(id,label,fn){if(document.getElementById(id))return;const a=document.createElement('a');a.id=id;a.href='#';a.textContent=label;a.style.cssText='display:block;padding:10px 14px';a.onclick=e=>{e.preventDefault();try{fn()}catch(_){}};c.appendChild(a)}add('menu_software_update','Software Update',()=>{(window.openUpdateCenter||window.showSoftwareUpdate||(()=>alert('Auto‑Update فعاله')) )()});add('menu_backup_center','Backup & Sync',()=>{(window.openBackupCenter||(()=>window.dispatchEvent(new CustomEvent('open-backup-center'))))()})}document.addEventListener('DOMContentLoaded',ensureMenu);function feed(){return 'https://raw.githubusercontent.com/Mostafa-hasanvand/Dentalos-pwa/main/updates/latest.json'}async function auto(){try{const res=await fetch(feed(),{cache:'no-store'});if(!res.ok)return;const pack=await res.json();const cur=localStorage.getItem('app_version')||'0.0.0';if(cur!==pack.version){await applyPack(pack);const t=document.createElement('div');t.textContent='نسخه جدید نصب شد: '+pack.version;t.style.cssText='position:fixed;inset-inline:0;bottom:12px;margin:auto;max-width:420px;background:rgba(0,0,0,.7);color:#fff;padding:10px 14px;border-radius:12px;backdrop-filter:blur(10px);text-align:center;z-index:99999';document.body.appendChild(t);setTimeout(()=>t.remove(),3200)}}catch(e){console.warn('[Update] auto error',e)}}document.addEventListener('DOMContentLoaded',auto);window.runManualUpdate=auto;document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('.fab-backup,#backup-fab,.backup-fab').forEach(el=>el.style.display='none'));})();",
+  "settingsDelta": {
+    "update": {
+      "channel": "Stable",
+      "auto": true,
+      "feed": "https://raw.githubusercontent.com/Mostafa-hasanvand/Dentalos-pwa/main/updates/latest.json"
+    },
+    "backup": {
+      "policy": "on_change",
+      "peerSync": true,
+      "cloud": { "url": "", "token": "" }
+    }
+  }
+}
