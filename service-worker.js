@@ -1,12 +1,13 @@
-/* DentalOS – Service Worker */
+/* DentalOS PWA — Service Worker */
 const CACHE = 'dent-os-v1.0.0';
 const APP_ASSETS = [
-  '/', '/index.html', '/manifest.webmanifest',
-  '/latest.json', '/backup.js',
-  '/icons/tooth-48.png','/icons/tooth-72.png','/icons/tooth-96.png',
-  '/icons/tooth-128.png','/icons/tooth-144.png','/icons/tooth-152.png',
-  '/icons/tooth-180.png','/icons/tooth-192.png','/icons/tooth-256.png',
-  '/icons/tooth-384.png','/icons/tooth-512.png'
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './icons/tooth-48.png','./icons/tooth-72.png','./icons/tooth-96.png',
+  './icons/tooth-128.png','./icons/tooth-144.png','./icons/tooth-152.png',
+  './icons/tooth-180.png','./icons/tooth-192.png','./icons/tooth-256.png',
+  './icons/tooth-384.png','./icons/tooth-512.png'
 ];
 
 self.addEventListener('install', e=>{
@@ -27,13 +28,12 @@ self.addEventListener('message', e=>{
 });
 
 self.addEventListener('fetch', e=>{
-  const { request } = e;
+  const {request} = e;
   if(request.method !== 'GET') return;
 
-  const url    = new URL(request.url);
   const isHTML = request.headers.get('accept')?.includes('text/html');
 
-  // Network‑First برای صفحات
+  // HTML: Network-First
   if(isHTML){
     e.respondWith((async ()=>{
       try{
@@ -43,29 +43,30 @@ self.addEventListener('fetch', e=>{
         return res;
       }catch{
         const cache = await caches.open(CACHE);
-        return await cache.match(request) || await cache.match('/index.html');
+        return (await cache.match(request)) || (await cache.match('./'));
       }
     })());
     return;
   }
 
-  // Stale‑While‑Revalidate برای دارایی‌های همین دامنه
+  // Same-origin: Stale-While-Revalidate
+  const url = new URL(request.url);
   if(url.origin === location.origin){
     e.respondWith((async ()=>{
       const cache = await caches.open(CACHE);
       const cached = await cache.match(request);
-      const network = fetch(request).then(res=>{ cache.put(request,res.clone()); return res; }).catch(()=>null);
-      return cached || network || fetch(request);
+      const network = fetch(request).then(res=>{ cache.put(request, res.clone()); return res; }).catch(()=>null);
+      return cached || network || new Response('',{status:504});
     })());
     return;
   }
 
-  // Network‑First برای بیرونی‌ها باFallback از کش
+  // Cross-origin: Network-First with fallback to cache
   e.respondWith((async ()=>{
     try{ return await fetch(request); }
     catch{
       const cache = await caches.open(CACHE);
-      return await cache.match(request) || Response.error();
+      return await cache.match(request) || new Response('',{status:504});
     }
   })());
 });
