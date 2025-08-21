@@ -1,119 +1,141 @@
-/* js/db.js */
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+// js/db.js
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const SB_URL = "https://poubooxbvvzbwyjlfmaj.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ";
-export const sb = createClient(SB_URL, SB_KEY);
+export const sb = createClient(
+  'https://poubooxbvvzbwyjlfmaj.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ'
+);
 
-// کلیدهای ذخیره‌ی محلی
-const KEY_APPTS  = 'DOS.APPOINTMENTS';
-const KEY_PRICES = 'DOS.PRICES';
-const KEY_QUEUE  = 'DOS.PENDING_QUEUE';
+/* Event Bus ساده */
+const bus = new EventTarget();
+export const on   = (name, cb)=> bus.addEventListener(name, e=>cb(e.detail));
+export const emit = (name, detail)=> bus.dispatchEvent(new CustomEvent(name,{detail}));
 
-// ابزار ذخیره محلی ساده
-const LDB = {
-  get: async (k)=> JSON.parse(localStorage.getItem(k)||'null'),
-  set: async (k,v)=> localStorage.setItem(k, JSON.stringify(v)),
-};
+/* IndexedDB */
+const DB_NAME='DentalOS.DB', STORE_KV='kv', STORE_Q='queue';
+const openIDB=()=>new Promise((res,rej)=>{
+  const r=indexedDB.open(DB_NAME,1);
+  r.onupgradeneeded=()=>{const db=r.result;
+    if(!db.objectStoreNames.contains(STORE_KV)) db.createObjectStore(STORE_KV);
+    if(!db.objectStoreNames.contains(STORE_Q))  db.createObjectStore(STORE_Q,{keyPath:'id'});
+  };
+  r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+});
+const kvGet=async k=>new Promise(async(res,rej)=>{const db=await openIDB();const tx=db.transaction(STORE_KV,'readonly');const s=tx.objectStore(STORE_KV);const g=s.get(k);g.onsuccess=()=>res(g.result);g.onerror=()=>rej(g.error);});
+const kvSet=async (k,v)=>new Promise(async(res,rej)=>{const db=await openIDB();const tx=db.transaction(STORE_KV,'readwrite');const s=tx.objectStore(STORE_KV);const p=s.put(v,k);p.onsuccess=()=>res(true);p.onerror=()=>rej(p.error);});
+const queueAll=async ()=>new Promise(async(res)=>{const db=await openIDB();const out=[];const tx=db.transaction(STORE_Q,'readonly');tx.objectStore(STORE_Q).openCursor().onsuccess=e=>{const c=e.target.result;if(c){out.push(c.value);c.continue();}else res(out)}});
+const queuePush=async it=>new Promise(async(res)=>{const db=await openIDB();it.id=it.id||crypto.randomUUID();const tx=db.transaction(STORE_Q,'readwrite');tx.objectStore(STORE_Q).put(it).onsuccess=()=>res(true)});
+const queueClear=async ids=>{if(!ids?.length)return;const db=await openIDB();await Promise.all(ids.map(id=>new Promise(r=>{const tx=db.transaction(STORE_Q,'readwrite');tx.objectStore(STORE_Q).delete(id).onsuccess=()=>r(true);})));};
 
-// صف آفلاین
-const Queue = {
-  async all(){ return (await LDB.get(KEY_QUEUE)) || []; },
-  async push(op){ const q = await this.all(); q.push({...op, ts: Date.now()}); await LDB.set(KEY_QUEUE, q); },
-  async clear(){ await LDB.set(KEY_QUEUE, []); }
-};
+/* کل جداول + کلیدهای اصلی */
+const KEY_TABLES='DOS.TABLES', KEY_PK='DOS.PK.';
+const DATA_PREFIX='DOS.DATA.';
+const kData=t=>DATA_PREFIX+t;
 
-// Toast عمومی
-function toast(msg){
-  const el = document.getElementById('toast'); if(!el) return;
-  el.textContent = msg; el.style.display='block';
-  clearTimeout(window.__t); window.__t = setTimeout(()=> el.style.display='none', 2500);
+export async function loadTables(){
+  if(navigator.onLine){
+    const { data, error } = await sb.from('app_tables').select('table_name');
+    if(!error && data){ const tables=data.map(x=>x.table_name).sort(); await kvSet(KEY_TABLES,tables); return tables; }
+  }
+  return (await kvGet(KEY_TABLES))||[];
 }
-window.toast = toast;
-
-// توابع دیتابیس
-export const DB = {};
-
-// --- قیمت‌ها ---
-DB.addPrice = async function(obj){
-  if(!obj?.title || !obj?.amount){ toast('نام/قیمت معتبر نیست'); return; }
-
+const pkCache={};
+export async function getPK(t){
+  if(pkCache[t]) return pkCache[t];
   if(navigator.onLine){
-    const { error } = await sb.from('prices').insert({ title: obj.title, amount: obj.amount });
-    if(error){ await Queue.push({t:'insert', table:'prices', data: obj}); toast('خطا! در صف قرار گرفت'); }
+    const { data } = await sb.from('table_pks').select('pk_cols').eq('table_name',t).maybeSingle();
+    if(data?.pk_cols){ pkCache[t]=data.pk_cols; await kvSet(KEY_PK+t,data.pk_cols); return data.pk_cols; }
+  }
+  const fb=(await kvGet(KEY_PK+t))||['id'];
+  pkCache[t]=fb; return fb;
+}
+
+/* کش/همگام‌سازی */
+export async function refreshTable(t){
+  if(!navigator.onLine) return (await kvGet(kData(t)))||[];
+  const { data, error } = await sb.from(t).select('*');
+  if(!error && data){ await kvSet(kData(t),data); emit('db:updated',{table:t,full:true}); return data; }
+  return (await kvGet(kData(t)))||[];
+}
+export async function refreshAllTables(){
+  const tables=await loadTables();
+  for(const t of tables) await refreshTable(t);
+  return tables;
+}
+export async function readAll(t){ return (await kvGet(kData(t)))||[]; }
+
+/* Upsert/Delete برای همهٔ جدول‌ها (حتی PK مرکب) + صف آفلاین */
+export async function upsert(t, rows){
+  const list = Array.isArray(rows)?rows:[rows];
+  if(navigator.onLine){
+    const onConflict = (await getPK(t)).join(',');
+    const { error } = await sb.from(t).upsert(list, { onConflict });
+    if(error){ await queuePush({op:'upsert',table:t,rows:list}); throw error; }
+    await refreshTable(t); return true;
   }else{
-    await Queue.push({t:'insert', table:'prices', data: obj});
-    toast('آفلاین هستید؛ در صف ذخیره شد');
+    await queuePush({op:'upsert',table:t,rows:list});
+    // به‌روز کردن کش محلی برای حس بلادرنگ
+    const cur = await readAll(t);
+    const pk = await getPK(t);
+    for(const r of list){
+      const idx = cur.findIndex(row=> pk.every(k=>row[k]===r[k]));
+      if(idx>-1) cur[idx]={...cur[idx],...r}; else cur.unshift(r);
+    }
+    await kvSet(kData(t),cur);
+    emit('db:updated',{table:t,full:false});
+    return true;
   }
-  const cur = (await LDB.get(KEY_PRICES)) || [];
-  cur.unshift({ id: 'local-'+Date.now(), ...obj });
-  await LDB.set(KEY_PRICES, cur);
-  if(window.renderPrices) window.renderPrices(cur);
-};
-
-DB.fetchPrices = async function(){
+}
+export async function removeByPK(t, where){
+  const list = Array.isArray(where)?where:[where];
   if(navigator.onLine){
-    const { data, error } = await sb.from('prices').select('*').order('id', { ascending:false });
-    if(!error && data){ await LDB.set(KEY_PRICES, data); }
-  }
-  return (await LDB.get(KEY_PRICES)) || [];
-};
-
-// --- نوبت‌ها ---
-DB.addAppointment = async function(obj){
-  if(!obj?.patient || !obj?.time){ toast('نام بیمار/زمان الزامی است'); return; }
-
-  if(navigator.onLine){
-    const { error } = await sb.from('appointments').insert({
-      patient: obj.patient, doctor: obj.doctor, time: obj.time, note: obj.note
-    });
-    if(error){ await Queue.push({t:'insert', table:'appointments', data: obj}); toast('خطا! در صف قرار گرفت'); }
+    let q = sb.from(t).delete();
+    for(const k of Object.keys(list[0])) q=q.eq(k,list[0][k]);
+    const { error } = await q;
+    if(error){ await queuePush({op:'delete',table:t,where:list}); throw error; }
+    await refreshTable(t); return true;
   }else{
-    await Queue.push({t:'insert', table:'appointments', data: obj});
-    toast('آفلاین هستید؛ در صف ذخیره شد');
+    await queuePush({op:'delete',table:t,where:list});
+    const cur = await readAll(t);
+    const pk  = await getPK(t);
+    const filtered = cur.filter(row=> !list.some(w=> pk.every(k=>row[k]===w[k])));
+    await kvSet(kData(t),filtered);
+    emit('db:updated',{table:t,full:false});
+    return true;
   }
-  const cur = (await LDB.get(KEY_APPTS)) || [];
-  cur.unshift({ id:'local-'+Date.now(), ...obj });
-  await LDB.set(KEY_APPTS, cur);
-  if(window.renderAppointments) window.renderAppointments(cur);
-};
+}
 
-DB.fetchAppointments = async function(){
-  if(navigator.onLine){
-    const { data, error } = await sb.from('appointments').select('*').order('time', { ascending:true });
-    if(!error && data){ await LDB.set(KEY_APPTS, data); }
-  }
-  return (await LDB.get(KEY_APPTS)) || [];
-};
-
-// همگام‌سازی صف آفلاین
-DB.syncPending = async function(showToast=false){
-  if(!navigator.onLine){ if(showToast) toast('همگام‌سازی: هنوز آفلاینید'); return; }
-  const q = await Queue.all();
-  if(!q.length){ if(showToast) toast('چیزی برای ارسال نیست'); return; }
-
-  for(const op of q){
+/* تخلیه صف آفلاین هنگام آنلاین شدن */
+export async function flushQueue(){
+  if(!navigator.onLine) return false;
+  const jobs = await queueAll(); if(jobs.length===0) return true;
+  const doneIds=[];
+  for(const j of jobs){
     try{
-      if(op.table==='prices' && op.t==='insert'){
-        await sb.from('prices').insert({ title: op.data.title, amount: op.data.amount });
+      if(j.op==='upsert'){
+        const onConflict = (await getPK(j.table)).join(',');
+        const { error } = await sb.from(j.table).upsert(j.rows,{ onConflict });
+        if(error) throw error;
+      }else if(j.op==='delete'){
+        for(const w of j.where){
+          let q = sb.from(j.table).delete();
+          for(const k of Object.keys(w)) q=q.eq(k,w[k]);
+          const { error } = await q; if(error) throw error;
+        }
       }
-      if(op.table==='appointments' && op.t==='insert'){
-        await sb.from('appointments').insert({
-          patient: op.data.patient, doctor: op.data.doctor, time: op.data.time, note: op.data.note
-        });
-      }
-    }catch(e){}
+      doneIds.push(j.id);
+    }catch(e){
+      // اگر خطا خورد، توقف (برای حفظ ترتیب)
+      break;
+    }
   }
-  await Queue.clear();
-  if(showToast) toast('همگام‌سازی معوقه انجام شد');
-  // تازه‌سازی کش محلی
-  if(window.renderPrices) window.renderPrices(await DB.fetchPrices());
-  if(window.renderAppointments) window.renderAppointments(await DB.fetchAppointments());
-};
+  await queueClear(doneIds);
+  // پس از تخلیه، همهٔ جدول‌ها را تازه کن
+  await refreshAllTables();
+  return true;
+}
 
-// بارگیری اولیه + ارسال معوقه در شروع
-(async ()=>{
-  if(window.renderPrices) window.renderPrices(await DB.fetchPrices());
-  if(window.renderAppointments) window.renderAppointments(await DB.fetchAppointments());
-  window.addEventListener('online', ()=> DB.syncPending(true));
-})();
+/* وضعیت شبکه برای نقطه‌ی سبز/قرمز */
+export const online = ()=> navigator.onLine;
+window.addEventListener('online', ()=>{ flushQueue(); emit('net',{online:true}); });
+window.addEventListener('offline',()=>{ emit('net',{online:false}); });
