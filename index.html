@@ -1,354 +1,272 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <title>DentMaster • DentalOS PWA</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>DentMaster 2025 • DentalOS PWA</title>
   <meta name="theme-color" content="#0b1020" />
 
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.webmanifest" />
-
-  <!-- iOS support -->
-  <link rel="apple-touch-icon" href="icons/tooth-180.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="DentalOS" />
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/tooth-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DentMaster 2025">
 
   <style>
     :root{
-      --bg:#0b1020; --glass:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      --text:#eaf3ff; --muted:#b6c2d1; --accent:#00e5ff; --radius:16px;
+      --bg:#0b1020; --glass:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+      --text:#eaf3ff; --muted:#b6c2d1; --accent:#00e5ff; --stroke:rgba(255,255,255,.18);
+      --radius:16px; --blur:18px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family: ui-rounded,"Vazirmatn","IRANSans",system-ui;
+      margin:0; font-family:ui-rounded,"Vazirmatn","IRANSans",system-ui,-apple-system,Segoe UI,Roboto;
       color:var(--text);
       background:
-        radial-gradient(60rem 60rem at 10% -10%, rgba(61,136,255,.12), transparent 40%),
-        radial-gradient(50rem 50rem at 110% 10%, rgba(0,229,255,.10), transparent 45%),
-        linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0b1020 100%);
+        radial-gradient(60rem 60rem at 10% -10%, rgba(61,201,255,.08), transparent 70%),
+        radial-gradient(50rem 50rem at 110% 10%, rgba(0,255,188,.08), transparent 70%),
+        linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0b1020 100%) fixed;
+      overflow-x:hidden;
     }
-    header{
-      position:sticky; top:0; z-index:10; backdrop-filter:blur(18px) saturate(140%);
-      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      border-bottom:1px solid rgba(255,255,255,.14);
-    }
-    .wrap{max-width:960px;margin:0 auto;padding:16px}
-    h1{margin:0; font-size:22px; display:flex; align-items:center; gap:10px}
-    h1 .dot{width:8px;height:8px;border-radius:50%;background:#2bd576;box-shadow:0 0 0 4px rgba(43,213,118,.15)}
-    .card{
-      background:var(--glass); border:1px solid rgba(255,255,255,.14);
-      border-radius:var(--radius); padding:16px; box-shadow:0 10px 30px rgba(0,0,0,.25);
-    }
-    .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .wrap{max-width:920px;margin:24px auto;padding:0 16px}
+    header{display:flex;align-items:center;gap:12px}
+    .dot{width:10px;height:10px;border-radius:50%;background:#27e36a;box-shadow:0 0 8px #27e36a}
+    h1{margin:0;font-size:24px;letter-spacing:.2px}
+    .card{background:var(--glass); backdrop-filter:blur(var(--blur)); border:1px solid var(--stroke);
+      border-radius:var(--radius); padding:16px; margin-top:16px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row > *{flex:1 1 220px}
     input,button{
-      height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.06); color:var(--text); padding:0 12px; outline:none;
+      height:44px; width:100%; border-radius:12px; border:1px solid var(--stroke);
+      background:rgba(255,255,255,.06); color:var(--text); padding:0 12px; outline:0;
     }
-    input::placeholder{color:var(--muted)}
-    button{cursor:pointer; background:linear-gradient(180deg, rgba(0,229,255,.35), rgba(0,229,255,.18)); border-color:rgba(0,229,255,.45)}
-    button.secondary{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.18)}
-    table{width:100%; border-collapse:separate; border-spacing:0 10px}
-    td,th{padding:12px 14px; text-align:right}
-    tbody tr{background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12)}
-    tbody tr{border-radius:12px}
-    .pill{font-size:12px;color:#0b1020;background:#00e5ff;padding:4px 10px;border-radius:999px}
+    button{cursor:pointer; border:1px solid rgba(0,229,255,.35); background:linear-gradient(180deg,rgba(0,229,255,.15),rgba(0,229,255,.05))}
+    table{width:100%; border-collapse:separate; border-spacing:0 8px}
+    th,td{padding:12px 14px; text-align:right}
+    th{color:var(--muted); font-weight:600}
+    tr{background:rgba(255,255,255,.04); border:1px solid var(--stroke)}
+    tr, td{border-radius:10px}
     .muted{color:var(--muted)}
-    .ok{color:#2bd576}
-    .warn{color:#ffb020}
-    .error{color:#ff5973}
-    .row{display:flex; gap:10px; align-items:center}
-    .spacer{flex:1}
-    footer{color:var(--muted); font-size:12px; padding:20px 0; text-align:center}
-    .hide{display:none}
+    .toolbar{display:flex; gap:8px; align-items:center}
+    .badge{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;font-size:12px;border:1px solid var(--stroke);border-radius:999px;color:var(--muted)}
+    .link{color:var(--accent);text-decoration:none}
+    .tiny{font-size:12px}
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap row">
-      <h1><span class="dot" id="onlineDot"></span> DentMaster 2025</h1>
-      <div class="spacer"></div>
-      <span id="versionTag" class="pill">v<span id="v">1</span></span>
+  <div class="wrap">
+    <header>
+      <span class="dot" id="onlineDot" title="online"></span>
+      <h1>DentMaster 2025</h1>
+      <span class="badge" id="verBadge">v<span id="appVersion">1</span></span>
+      <a class="badge link tiny" href="#" id="syncBtn">سینک آفلاین‌ها</a>
+      <span class="badge tiny" id="updateBadge" style="display:none">درحال به‌روزرسانی…</span>
+    </header>
+
+    <!-- ورودی‌ها -->
+    <div class="card">
+      <div class="row">
+        <input id="titleInput" placeholder="نام خدمت (مثلاً: کامپوزیت)">
+        <input id="priceInput" inputmode="numeric" placeholder="قیمت (تومان)">
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="toolbar" style="flex:1">
+          <button id="addBtn">افزودن/ثبت</button>
+          <button id="syncOfflineBtn">سینک آفلاین‌ها</button>
+        </div>
+      </div>
+      <p class="muted tiny" style="margin:10px 2px 0">
+        تغییراتی که منشی یا شما ثبت کنید، بلافاصله روی تمام گوشی‌ها نمایش می‌شود (Realtime). در حالت آفلاین، در صف ذخیره می‌شود و با اتصال، خودکار اعمال می‌گردد.
+      </p>
     </div>
-  </header>
 
-  <main class="wrap">
-    <!-- فرم مدیریت قیمت‌ها -->
-    <section class="card" style="margin-top:14px">
-      <div class="row toolbar">
-        <input id="name" placeholder="نام خدمت (مثلاً: کامپوزیت)" style="flex:2" />
-        <input id="price" placeholder="قیمت (تومان)" inputmode="numeric" style="flex:1" />
-        <button id="addBtn">افزودن/ثبت</button>
-        <button id="syncBtn" class="secondary">سینک آفلاین‌ها</button>
-      </div>
-      <div class="muted" style="margin-top:8px">
-        تغییراتی که منشی یا شما ثبت کنید، بلافاصله روی تمام گوشی‌ها نمایش داده می‌شود (Realtime). در حالت آفلاین، در صف ذخیره می‌شود و با اتصال، خودکار اعمال می‌گردد.
-      </div>
-    </section>
-
-    <!-- جدول قیمت‌ها -->
-    <section class="card" style="margin-top:14px">
-      <div class="row" style="margin-bottom:6px">
+    <!-- لیست قیمت‌ها -->
+    <div class="card">
+      <div class="toolbar" style="justify-content:space-between;margin-bottom:6px">
         <strong>لیست قیمت‌ها</strong>
-        <div class="spacer"></div>
-        <span id="status" class="muted">در حال بارگذاری…</span>
+        <span class="muted tiny">تعداد <span id="count">0</span> مورد</span>
       </div>
-      <table>
+      <div class="muted tiny" id="emptyRow" style="padding:14px;border:1px dashed var(--stroke);border-radius:10px;display:none">
+        هنوز قیمتی ثبت نشده است.
+      </div>
+      <table id="pricesTable">
         <thead>
-          <tr>
-            <th>نام خدمت</th>
-            <th>قیمت (تومان)</th>
-            <th class="muted">ویرایش</th>
-          </tr>
+          <tr><th>نام خدمت</th><th>قیمت (تومان)</th><th>ویرایش</th></tr>
         </thead>
-        <tbody id="rows"></tbody>
+        <tbody id="pricesTbody"></tbody>
       </table>
-    </section>
+    </div>
 
-    <!-- پیام‌ها -->
-    <section id="msg" class="card hide" style="margin-top:14px"></section>
-  </main>
+    <p class="muted tiny" style="text-align:center;margin:22px 0 8px">
+      DentalOS • PWA • Supabase Realtime • Backup & Auto‑Update
+    </p>
+  </div>
 
-  <footer>
-    DentalOS • PWA • Supabase Realtime • Backup & Auto-Update
-  </footer>
+  <!-- ============== Scripts ============== -->
+  <!-- Supabase CDN -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
-  <!-- رجیستر سرویس‌ورکر برای آفلاین + آپدیت خودکار -->
   <script>
-    (function registerSW(){
-      if(!('serviceWorker' in navigator)) return;
+    /* ==== تنظیمات نسخه و آپدیت خودکار ==== */
+    const LOCAL_VERSION_KEY = 'dentalos_version';
+    const APP_VERSION = 1;           // هر بار که تغییر مهم می‌دی، این را +1 کن
+    document.getElementById('appVersion').textContent = APP_VERSION;
+    localStorage.setItem(LOCAL_VERSION_KEY, String(APP_VERSION));
+
+    async function checkForUpdates(){
+      try{
+        const res = await fetch('latest.json', {cache:'no-store'});
+        if(!res.ok) return;
+        const meta = await res.json(); // {version, timestamp}
+        if(Number(meta.version) > APP_VERSION){
+          document.getElementById('updateBadge').style.display = 'inline-flex';
+          // به سرویس‌ورکر بگو نسخه جدید فعال شود
+          if(navigator.serviceWorker?.controller){
+            navigator.serviceWorker.controller.postMessage({type:'SKIP_WAITING'});
+          }
+          setTimeout(()=>location.reload(), 1200);
+        }
+      }catch(_){}
+    }
+
+    /* ==== رجیستر سرویس‌ورکر + مدیریت آپدیت ==== */
+    if('serviceWorker' in navigator){
       window.addEventListener('load', async () => {
         try{
-          const reg = await navigator.serviceWorker.register('/service-worker.js', {scope:'/'});
-          // اگر SW جدید نصب شد -> سریع فعال شود
-          const kick = w => w && w.postMessage({type:'SKIP_WAITING'});
-          if(reg.waiting) kick(reg.waiting);
-          reg.addEventListener('updatefound', () => {
+          const reg = await navigator.serviceWorker.register('./service-worker.js', {scope:'./'});
+          if(reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
+          reg.addEventListener('updatefound', ()=>{
             const nw = reg.installing;
-            nw && nw.addEventListener('statechange', () => {
-              if(nw.state === 'installed' && navigator.serviceWorker.controller){
-                kick(nw);
-                nw.addEventListener('statechange', () => {
-                  if(nw.state === 'activated') location.reload();
+            nw && nw.addEventListener('statechange', ()=>{
+              if(nw.state==='installed' && navigator.serviceWorker.controller){
+                nw.postMessage({type:'SKIP_WAITING'});
+                nw.addEventListener('statechange', ()=>{
+                  if(nw.state==='activated') location.reload();
                 });
               }
             });
           });
-        }catch(e){ console.warn('SW register fail', e); }
+        }catch(e){ console.warn('SW register failed', e); }
+        checkForUpdates();
       });
-    })();
-  </script>
-
-  <!-- برنامه: Supabase CRUD + Realtime + صف آفلاین + چک نسخه -->
-  <script type="module">
-    // --- تنظیمات آنلاین/آفلاین (چراغ بالا)
-    const onlineDot = document.getElementById('onlineDot');
-    function paintOnline(){
-      const on = navigator.onLine;
-      onlineDot.style.background = on ? '#2bd576' : '#ffb020';
-      onlineDot.style.boxShadow  = on ? '0 0 0 4px rgba(43,213,118,.15)' : '0 0 0 4px rgba(255,176,32,.15)';
     }
-    window.addEventListener('online', paintOnline);
-    window.addEventListener('offline', paintOnline);
+
+    /* ==== وضعیت آنلاین/آفلاین ==== */
+    const dot = document.getElementById('onlineDot');
+    function paintOnline(){ dot.style.background = navigator.onLine ? '#27e36a' : '#ffb020'; }
+    addEventListener('online', paintOnline);
+    addEventListener('offline', paintOnline);
     paintOnline();
 
-    // --- نسخه برنامه از latest.json
-    const APP_VERSION_KEY = 'dentos_version';
-    const vEl = document.getElementById('v');
-    async function checkVersion(){
-      try{
-        const res = await fetch('/latest.json', {cache:'no-store'});
-        if(!res.ok) return;
-        const j = await res.json(); // {version: "x.y.z"}
-        const cur = localStorage.getItem(APP_VERSION_KEY) || '0';
-        vEl.textContent = j.version || '1';
-        if(j.version && j.version !== cur){
-          localStorage.setItem(APP_VERSION_KEY, j.version);
-          // اگر SW تازه فعال شده خودش ریفرش می‌کند؛ اینجا هم محافظه‌کارانه رفرش نرم:
-          setTimeout(()=>location.reload(), 300);
-        }
-      }catch{}
-    }
-    checkVersion();
+    /* ==== Supabase init (با مقادیر تو) ==== */
+    const SUPABASE_URL = "https://poubooxbvvzbwyjlfmaj.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ";
+    const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // --- اتصال Supabase (URL/KEY شما)
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-    const supabaseUrl = 'https://poubooxbvvzbwyjlfmaj.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ';
-    const sb = createClient(supabaseUrl, supabaseKey);
-
-    // --- عناصر UI
-    const $ = s => document.querySelector(s);
-    const rowsEl = $('#rows');
-    const nameEl = $('#name');
-    const priceEl = $('#price');
-    const statusEl = $('#status');
-    const msgEl = $('#msg');
-    const syncBtn = $('#syncBtn');
-    const addBtn = $('#addBtn');
-
-    // --- صف آفلاین (CRUD queue)
-    const QKEY = 'dentalos_offline_queue';
-    const readQ = () => JSON.parse(localStorage.getItem(QKEY) || '[]');
-    const saveQ = q => localStorage.setItem(QKEY, JSON.stringify(q));
+    /* ==== صف آفلاین ساده ==== */
+    const QKEY = 'dentalos_offline_queue'; // آرایه‌ای از عملیات {op:"upsert", row:{id,title,price}}
+    const queue = JSON.parse(localStorage.getItem(QKEY) || '[]');
+    function saveQueue(){ localStorage.setItem(QKEY, JSON.stringify(queue)); }
 
     async function flushQueue(){
-      let q = readQ();
-      if(!q.length) return toast('چیزی برای سینک نیست.','ok');
-      for (const job of q){
-        try{
-          if(job.op === 'insert'){
-            const {error} = await sb.from('prices').insert([job.row]);
-            if(error) throw error;
-          }else if(job.op === 'update'){
-            const {error} = await sb.from('prices').update(job.patch).eq('id', job.id);
-            if(error) throw error;
-          }else if(job.op === 'delete'){
-            const {error} = await sb.from('prices').delete().eq('id', job.id);
-            if(error) throw error;
-          }
-        }catch(e){
-          console.warn('queue fail item keeps', job, e);
-          return toast('سینک ناقص. بعداً دوباره امتحان می‌کنیم.','warn');
+      if(!navigator.onLine || !queue.length) return;
+      try{
+        const batch = [...queue];
+        const { data, error } = await supa.from('prices').upsert(batch.map(x=>x.row), {onConflict:'id'});
+        if(!error){
+          queue.length = 0; saveQueue();
         }
-        // موفق بود -> از صف حذف
-        q = readQ().filter(x => !(x.ts === job.ts));
-        saveQ(q);
-      }
-      toast('سینک آفلاین‌ها کامل شد.','ok');
+      }catch(e){ console.warn('flush err', e); }
+    }
+    addEventListener('online', flushQueue);
+
+    /* ==== بک‌آپ اتوماتیک (Local + Supabase Storage) ==== */
+    const BK_KEY = 'dentalos_backup_prices';
+    async function backupCloud(json){
+      try{
+        const fname = `backup_${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
+        const blob = new Blob([json], {type:'application/json'});
+        // نیاز به باکت public به نام "backups" (در Supabase Storage بساز)
+        await supa.storage.from('backups').upload(fname, blob, {contentType:'application/json', upsert:false});
+      }catch(e){ console.warn('cloud backup fail', e); }
     }
 
-    // آنلاین که شدیم، صف را خالی کن
-    window.addEventListener('online', () => flushQueue());
+    /* ==== UI helper ==== */
+    const $ = s => document.querySelector(s);
+    const tbody = $('#pricesTbody'), countEl = $('#count'), emptyRow = $('#emptyRow');
 
-    // --- UI Helpers
-    function rial(n){ try{ return (+n).toLocaleString('fa-IR'); }catch{ return n } }
-    function toast(t,type='ok'){
-      msgEl.textContent = t;
-      msgEl.className = 'card ' + (type==='ok'?'': type==='warn'?'warn':'error');
-      msgEl.classList.remove('hide');
-      setTimeout(()=>msgEl.classList.add('hide'), 3000);
-    }
-
-    // --- رندر جدول
-    function renderRows(list){
-      rowsEl.innerHTML = '';
-      if(!list || !list.length){
-        rowsEl.innerHTML = `<tr><td colspan="3" class="muted">هنوز قیمتی ثبت نشده است.</td></tr>`;
-        return;
-      }
-      list.forEach(row => {
+    function renderRows(rows){
+      tbody.innerHTML = '';
+      if(!rows || !rows.length){ emptyRow.style.display='block'; countEl.textContent = '0'; return; }
+      emptyRow.style.display='none';
+      countEl.textContent = String(rows.length);
+      for(const r of rows){
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${row.name}</td>
-          <td>${rial(row.price)}</td>
-          <td class="row">
-            <button class="secondary" data-edit="${row.id}">ویرایش</button>
-            <button class="secondary" data-del="${row.id}">حذف</button>
-          </td>`;
-        rowsEl.appendChild(tr);
+          <td>${r.title ?? ''}</td>
+          <td>${(r.price ?? '').toLocaleString('fa-IR')}</td>
+          <td><button data-id="${r.id}">ویرایش</button></td>`;
+        tbody.appendChild(tr);
+      }
+      // دکمه‌های ویرایش (در این نسخه فقط نمایش می‌دهیم)
+      tbody.querySelectorAll('button[data-id]').forEach(btn=>{
+        btn.onclick = ()=> alert('ویرایش سریع: در نسخه کامل فرم ویرایش باز می‌شود.');
       });
     }
 
-    // --- بارگذاری اولیه
-    async function load(){
-      statusEl.textContent = 'در حال بارگذاری…';
-      const {data, error} = await sb.from('prices').select('*').order('id', {ascending:true});
-      if(error){ statusEl.textContent = 'خطا در بارگذاری'; return; }
-      renderRows(data);
-      statusEl.textContent = `تعداد ${data.length} مورد`;
-    }
-    await load();
-
-    // --- Realtime: هر تغییری روی همه دیوایس‌ها پخش شود
-    sb.channel('public:prices')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'prices' }, payload => {
-        // به‌سادگی دوباره لیست را می‌گیریم؛ برای پروژه بزرگ میشه بهینه‌تر کرد
-        load();
-      })
-      .subscribe(status => console.log('RT status:', status));
-
-    // --- ایجاد/به‌روزرسانی
-    addBtn.addEventListener('click', async () => {
-      const name = nameEl.value.trim();
-      const price = +(priceEl.value || '').toString().replace(/[^\d]/g,'');
-      if(!name || !price) return toast('نام و قیمت را کامل وارد کنید','warn');
-
-      // اگر قبلاً رکوردی با همین نام داریم -> آپدیت
-      const { data: exist } = await sb.from('prices').select('id').eq('name', name).limit(1);
+    /* ==== بارگذاری اولیه + ذخیره محلی جهت بک‌آپ ==== */
+    async function loadPrices(){
       try{
-        if(!navigator.onLine){
-          // صف آفلاین
-          const ts = Date.now();
-          if(exist && exist.length){
-            const job = {op:'update', id: exist[0].id, patch:{price, updated_at:new Date().toISOString()}, ts};
-            saveQ([...readQ(), job]);
-          }else{
-            const job = {op:'insert', row:{name, price, updated_at:new Date().toISOString()}, ts};
-            saveQ([...readQ(), job]);
-          }
-          toast('بدون اینترنت: در صف آفلاین ذخیره شد.','warn');
-          // خوش‌بینانه رندر کن
-          load();
-          return;
-        }
-
-        if(exist && exist.length){
-          const {error} = await sb.from('prices').update({price, updated_at:new Date().toISOString()}).eq('id', exist[0].id);
-          if(error) throw error;
-          toast('ویرایش شد.','ok');
-        }else{
-          const {error} = await sb.from('prices').insert([{name, price}]);
-          if(error) throw error;
-          toast('افزوده شد.','ok');
-        }
-        nameEl.value = ''; priceEl.value = '';
+        const { data, error } = await supa.from('prices').select('*').order('created_at', {ascending:false});
+        if(error) throw error;
+        renderRows(data);
+        localStorage.setItem(BK_KEY, JSON.stringify(data)); // بک‌آپ محلی
       }catch(e){
-        console.error(e);
-        toast('خطا در ذخیره‌سازی','error');
+        // آفلاین: از بک‌آپ محلی نمایش بده
+        const cached = JSON.parse(localStorage.getItem(BK_KEY) || '[]');
+        renderRows(cached);
       }
-    });
+    }
 
-    // --- حذف / ویرایش با delegation
-    rowsEl.addEventListener('click', async (ev) => {
-      const t = ev.target;
-      if(t.dataset.del){
-        const id = +t.dataset.del;
-        if(!confirm('حذف شود؟')) return;
+    /* ==== Realtime: هر تغییری رو زنده اعمال کن ==== */
+    const channel = supa.channel('prices-ch')
+      .on('postgres_changes', {event: '*', schema: 'public', table: 'prices'}, (payload) => {
+        loadPrices();
+      }).subscribe();
 
-        if(!navigator.onLine){
-          const ts = Date.now();
-          saveQ([...readQ(), {op:'delete', id, ts}]);
-          toast('حذف در صف آفلاین.','warn');
-          load();
-          return;
-        }
-        const {error} = await sb.from('prices').delete().eq('id', id);
-        if(error) return toast('خطا در حذف','error');
-        toast('حذف شد.','ok');
+    /* ==== افزودن قیمت ==== */
+    async function addPrice(){
+      const title = $('#titleInput').value.trim();
+      const raw = $('#priceInput').value.replace(/[^\d]/g,'');
+      if(!title || !raw){ alert('نام خدمت و قیمت را وارد کنید'); return; }
+      const price = Number(raw);
+      const row = { title, price };
+
+      if(navigator.onLine){
+        const { error } = await supa.from('prices').insert(row);
+        if(error){ alert('خطا در ثبت آنلاین'); return; }
+        await loadPrices();
+        // بک‌آپ ابری
+        const snapshot = localStorage.getItem(BK_KEY) || '[]';
+        backupCloud(snapshot);
+      }else{
+        // صف آفلاین
+        queue.push({op:'upsert', row:{ id: crypto.randomUUID(), ...row }});
+        saveQueue();
+        alert('آفلاین هستید؛ مورد به صف اضافه شد و با اتصال، خودکار سینک می‌شود.');
       }
-      if(t.dataset.edit){
-        const id = +t.dataset.edit;
-        const newPrice = prompt('قیمت جدید (تومان):');
-        if(!newPrice) return;
-        const p = +(newPrice || '').toString().replace(/[^\d]/g,'');
-        if(!navigator.onLine){
-          const ts = Date.now();
-          saveQ([...readQ(), {op:'update', id, patch:{price:p, updated_at:new Date().toISOString()}, ts}]);
-          toast('ویرایش در صف آفلاین.','warn');
-          load();
-          return;
-        }
-        const {error} = await sb.from('prices').update({price:p, updated_at:new Date().toISOString()}).eq('id', id);
-        if(error) return toast('خطا در ویرایش','error');
-        toast('ویرایش شد.','ok');
-      }
-    });
+      $('#titleInput').value=''; $('#priceInput').value='';
+    }
 
-    // --- دکمه سینک دستی
-    syncBtn.addEventListener('click', flushQueue);
+    /* ==== رویدادها ==== */
+    $('#addBtn').onclick = addPrice;
+    $('#syncOfflineBtn').onclick = flushQueue;
+    $('#syncBtn').onclick = (e)=>{ e.preventDefault(); flushQueue(); };
+
+    // شروع
+    loadPrices();
   </script>
 </body>
 </html>
