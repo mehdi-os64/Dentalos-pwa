@@ -1,188 +1,519 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DentalOS • PWA</title>
-
-  <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#0b1020"/>
-
-  <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto; background:#0b1020;color:#eef}
-    .wrap{max-width:980px;margin:0 auto;padding:16px}
-    .card{background:rgba(255,255,255,.06);backdrop-filter: blur(8px);border-radius:14px;padding:14px;margin:14px 0;border:1px solid rgba(255,255,255,.08)}
-    h1,h2{margin:.2rem 0 1rem}
-    input,button,textarea{font-size:16px;border-radius:10px;border:1px solid #3b4457; padding:12px;background:#0e1529;color:#eef; outline:none}
-    input,textarea{width:100%}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .row > *{flex:1}
-    .btn{background:#12b3ff;border-color:#12b3ff; cursor:pointer}
-    .muted{opacity:.75}
-    table{width:100%;border-collapse:collapse;margin-top:8px}
-    th,td{border-bottom:1px solid rgba(255,255,255,.08);padding:10px;text-align:right}
-    .ok{color:#38f27a}
-    .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:6px}
-    .dot.on{background:#23e16c}.dot.off{background:#ff5d6c}
-    #toast{display:none;position:fixed;bottom:14px;left:14px;right:14px;background:#141c33;border:1px solid #2a3553;border-radius:10px;padding:12px;z-index:99}
-    small.badge{border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:999px;margin-right:6px;font-size:12px;opacity:.85}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media (max-width:720px){.grid2{grid-template-columns:1fr}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>DentalOS • V4 • PRO • Super AI + AutoTest • iOS26 LiquidNav</title>
+<meta name="theme-color" content="#0b1020">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/tooth-144.png" type="image/png">
+<style>
+/* ——— تمام استایل‌ها و UI برنامه (هدر، جستجو، کاشی‌ها، شیت‌ها، نوار پایین، اورب AI، تم‌ها) ——— */
+:root{
+  --bg:#0b1020;
+  --stroke:rgba(255,255,255,.22);
+  --glass:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+  --blur:18px;
+  --text:#eaf3ff;
+  --muted:#b6c2d1;
+  --accent:#00e5ff;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-rounded,"Vazirmatn","IRANSans",system-ui,-apple-system,Segoe UI,Roboto;
+  color:var(--text);
+  background:
+   radial-gradient(60rem 60rem at 10% -10%, rgba(61,110,255,.25), transparent 60%),
+   radial-gradient(50rem 50rem at 110% 10%, rgba(0,230,230,.18), transparent 60%),
+   linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0e1226 100%);
+  overflow:hidden;
+  user-select:none;
+}
+/* Header */
+.header{position:fixed;inset:0 0 auto 0;height:64px;display:flex;align-items:center;gap:10px;
+  padding:0 clamp(10px,3vw,18px);z-index:90;
+  backdrop-filter:blur(var(--blur)) saturate(140%);-webkit-backdrop-filter:blur(var(--blur)) saturate(140%);
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-bottom:1px solid var(--stroke)}
+.hamb{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;cursor:pointer;
+  background:rgba(255,255,255,.12);border:1px solid var(--stroke)}
+.hamb span,.hamb::before,.hamb::after{content:"";width:18px;height:2px;background:#fff;border-radius:2px;display:block;transition:.25s}
+.hamb::before{transform:translateY(-5px)}.hamb::after{transform:translateY(5px)}
+.hamb.active{background:rgba(255,255,255,.2)}.hamb.active span{opacity:0}
+.hamb.active::before{transform:translateY(0) rotate(45deg)}.hamb.active::after{transform:translateY(0) rotate(-45deg)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:38px;height:38px;border-radius:12px;position:relative;overflow:hidden;
+  background:radial-gradient(120% 120% at 20% 20%,#6dd5fa 0%,#2980b9 35%,#172a45 100%);
+  box-shadow:inset 0 0 12px rgba(255,255,255,.25),0 10px 30px rgba(0,0,0,.35)}
+.title{font-weight:900;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Smart search */
+.searchDock{position:fixed;inset:64px 12px auto 12px;z-index:80;display:flex;gap:10px;align-items:center}
+.searchBar{flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:16px;border:1px solid var(--stroke);background:var(--glass);
+  backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.searchBar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--stroke);background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
+.mic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--stroke);cursor:pointer;
+  background:linear-gradient(135deg,#7ad8ff,#7ef2e0);color:#001018;box-shadow:0 12px 28px rgba(0,0,0,.35)}
+.mic.rec{animation:pulse 1.2s infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,229,255,.45)}70%{box-shadow:0 0 0 14px rgba(0,229,255,0)}100%{box-shadow:0 0 0 0 rgba(0,229,255,0)}}
+/* Main content */
+.main{position:fixed;inset:118px 0 calc(128px + env(safe-area-inset-bottom)) 0;padding:14px;overflow:auto}
+/* Calendar + tiles */
+.card{border-radius:20px;padding:12px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.caldow{opacity:.75;font-size:12px}
+.calday{padding:12px 0;border:1px solid var(--stroke);border-radius:12px;background:rgba(255,255,255,.06);position:relative}
+.calday.today{outline:2px solid var(--accent)}
+.calday .plus{position:absolute;inset:auto 8px 6px auto;font-weight:900;opacity:.65}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
+.tile{position:relative;min-height:120px;border-radius:20px;padding:14px;cursor:pointer;
+  background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));
+  box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .2s ease;overflow:hidden}
+.tile:hover{transform:translateY(-2px)}
+.tile .icon{font-size:28px}.tile .t{margin-top:8px;font-weight:800;font-size:18px}.tile .d{opacity:.75;font-size:12px}
+.tile .optbtn{position:absolute;inset:10px auto auto 10px;padding:6px 8px;border-radius:10px;border:1px solid var(--stroke);background:rgba(0,0,0,.25);color:#fff}
+/* Bottom nav iOS26 Liquid Glass */
+.bnav{position:fixed;inset:auto 12px calc(12px + env(safe-area-inset-bottom)) 12px;height:88px;
+  display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:center;justify-items:center;
+  border-radius:26px;padding:8px 10px;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.18));
+  border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);
+  box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.25); z-index:85}
+.bnav .item{position:relative;width:100%;height:64px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--muted);cursor:pointer;transition:.18s}
+.bnav .ico{font-size:34px;line-height:1;filter:drop-shadow(0 14px 18px rgba(0,0,0,.45));transition:transform .12s}
+.bnav .label{font-size:12px;margin-top:4px}
+.bnav .item:active .ico{transform:translateY(2px) scale(.98)}
+.bnav .item.active{color:#fff;background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.10));
+  box-shadow:inset 0 6px 16px rgba(0,0,0,.35), inset 0 -1px 0 rgba(255,255,255,.25); transform:translateY(1px)}
+.bnav .item.active .ico{transform:translateY(1px) scale(.96)}
+/* droplet */
+.droplet{position:absolute;left:0;top:0;width:72px;height:72px;border-radius:24px;pointer-events:none;opacity:0;
+  background:radial-gradient(30% 30% at 30% 30%, rgba(255,255,255,.35), rgba(255,255,255,.10));
+  filter:blur(0);transition:opacity .15s, transform .06s}
+.droplet.show{opacity:1}
+/* Overlays */
+.backdrop{position:fixed;inset:64px 0 calc(128px + env(safe-area-inset-bottom)) 0;background:rgba(10,12,18,.55);z-index:88;opacity:0;pointer-events:none;transition:.25s}
+.backdrop.show{opacity:1;pointer-events:auto}
+.sidemenu{position:fixed;inset:64px 0 calc(128px + env(safe-area-inset-bottom)) auto;width:min(380px,92vw);
+  transform:translateX(100%);transition:.25s;z-index:89;padding:16px;overflow:auto;
+  background:linear-gradient(180deg,rgba(17,24,39,.97),rgba(17,24,39,.94));color:#eaf3ff;border-left:1px solid rgba(255,255,255,.12);
+  box-shadow:-18px 0 40px rgba(0,0,0,.45)}
+.sidemenu.open{transform:none}
+.group{margin:10px 0 16px}.group h3{font-size:13px;opacity:.95;margin:0 0 8px}
+.sel{padding:9px 11px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.help{font-size:12px;opacity:.85;padding:8px 10px;border:1px dashed rgba(255,255,255,.25);border-radius:12px;background:rgba(255,255,255,.06)}
+/* Sheet */
+.sheet{position:fixed;inset:64px 0 calc(128px + env(safe-area-inset-bottom)) 0;display:none;z-index:86}
+.sheet.open{display:block}
+.scard{position:absolute;inset:14px;border-radius:22px;overflow:hidden;background:var(--glass);border:1px solid var(--stroke);
+  backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;flex-direction:column}
+.shead{padding:12px 14px 8px 14px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;justify-content:space-between}
+.shead .stitle{font-weight:900;font-size:16px}
+.sbody{flex:1;overflow:auto;padding:12px 14px 84px 14px}
+.sfooter{position:absolute;inset:auto 12px 12px 12px;display:flex;justify-content:space-between;gap:12px}
+.action{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:14px;border:1px solid var(--stroke);
+  background:rgba(255,255,255,.08);color:#fff;font-weight:700;cursor:pointer}
+.action.red{border-color:#e94560;background:rgba(233,69,96,.15)}.action.green{border-color:#16c784;background:rgba(22,199,132,.15)}.action.yellow{border-color:#f5c518;background:rgba(245,197,24,.15);color:#f7e08a}
+/* AI orb */
+#aiOrb{position:fixed;right:18px;bottom:calc(160px + env(safe-area-inset-bottom));width:72px;height:72px;border-radius:22px;display:grid;place-items:center;cursor:grab;
+  background:conic-gradient(from 200deg,#7ad8ff,#8ef5a9,#bca7ff,#7ad8ff);box-shadow:0 18px 40px rgba(0,0,0,.45),inset 0 0 18px rgba(255,255,255,.45);z-index:87}
+#aiOrb svg{width:30px;height:30px;filter:drop-shadow(0 6px 12px rgba(0,0,0,.4))}#aiOrb:active{cursor:grabbing}
+.mini{font-size:12px;opacity:.8}
+.hidden{display:none}
+fieldset{border:1px dashed rgba(255,255,255,.2);border-radius:12px;padding:12px;margin:0 0 10px}
+legend{padding:0 6px;opacity:.8;font-size:12px}
+label{display:block;font-size:12px;opacity:.85;margin:6px 0 4px}
+input,select,textarea{width:100%;border-radius:12px;border:1px solid var(--stroke);background:rgba(255,255,255,.06);color:#fff;padding:10px 12px}
+/* لوگوی چرخان + عنوان برند */
+.brand .logo{width:48px;height:48px;background:transparent!important;box-shadow:none!important;border-radius:50%;overflow:visible;position:relative}
+.brand .logo svg{width:48px;height:48px;display:block;filter:drop-shadow(0 6px 12px rgba(0,0,0,.35))}
+@keyframes spinY{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
+.brand .logo .tooth3d{transform-origin:center;animation:spinY 10s linear infinite}
+#brandTitle{display:flex; gap:.5rem; align-items:center; font-weight:900; font-size: clamp(18px,3.8vw,28px);}
+#brandTitle .w{--c:#fff;color:var(--c);display:inline-block;padding:.15rem .45rem;border-radius:12px;
+  text-shadow:0 2px 10px color-mix(in oklab, var(--c) 55%, transparent);
+  animation:bob 2.8s ease-in-out infinite alternate, glow 3.6s ease-in-out infinite alternate; }
+#brandTitle .w:nth-child(1){ --c:#00e5ff;} #brandTitle .w:nth-child(2){ --c:#ff5da2;}
+#brandTitle .w:nth-child(3){ --c:#ffd166;} #brandTitle .w:nth-child(4){ --c:#a78bfa;}
+@keyframes bob{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-4px) rotate(-1deg)}}
+@keyframes glow{0%{text-shadow:0 2px 10px color-mix(in oklab,var(--c) 45%,transparent)}
+100%{text-shadow:0 0 18px color-mix(in oklab,var(--c) 90%,transparent)}}
+</style>
 </head>
 <body>
-<div id="toast"></div>
-
-<div class="wrap">
-
-  <div class="card">
-    <h1>DentalOS • PWA
-      <small class="badge" id="version">v1</small>
-      <span class="dot" id="onlineDot"></span>
-      <small class="muted" id="onlineText">چک اتصال…</small>
-    </h1>
-    <div class="muted">نسخه‌ی کامل با آفلاین/آنلاین، همگام‌سازی زنده (Realtime) و بک‌آپ خودکار.</div>
-  </div>
-
-  <!-- فرم نوبت‌ها -->
-  <div class="card">
-    <h2>نوبت جدید</h2>
-    <div class="grid2">
-      <input id="ap_patient" placeholder="نام بیمار">
-      <input id="ap_doctor"  placeholder="نام دکتر">
+  <div class="header">
+    <div class="hamb" id="hamb"><span></span></div>
+    <div class="brand">
+      <div class="logo"></div>
+      <div class="title" id="brandTitle">
+        <span class="w">دندانپزشکی</span><span class="w">دکتر</span><span class="w">مینا</span><span class="w">مازندرانی</span>
+      </div>
     </div>
-    <div class="grid2">
-      <input id="ap_time" type="datetime-local" placeholder="زمان نوبت">
-      <input id="ap_note" placeholder="یادداشت (اختیاری)">
+  </div>
+
+  <!-- Smart search -->
+  <div class="searchDock">
+    <div class="searchBar">
+      <input id="q" placeholder="جستجوی هوشمند: بیمار/قسط/چک/رویداد/انبار..." />
+      <button class="btn" id="searchBtn">جستجو</button>
     </div>
-    <div class="row">
-      <button class="btn" id="btnAddAppt">افزودن/ثبت</button>
-      <button id="btnSync" title="ارسال آفلاین‌های باقیمانده">همگام‌سازی معوقه</button>
-      <button id="btnBackup" title="بک‌آپ فوری">بک‌آپ فوری</button>
+    <div class="mic" id="micBtn" title="گفتار به نوشتار">🎙️</div>
+  </div>
+
+  <div class="main">
+    <div class="card" id="calHost"></div>
+    <div class="grid" id="tiles"></div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bnav" id="bnav">
+    <div class="droplet" id="drop"></div>
+  </div>
+
+  <div class="backdrop" id="backdrop"></div>
+  <aside class="sidemenu" id="sidemenu">
+    <div class="group">
+      <h3>تنظیمات برنامه</h3>
+      <div class="row">
+        <button class="btn" data-act="askNoti">🔔 فعال‌سازی اعلان</button>
+        <button class="btn" data-act="askMic">🎤 فعال‌سازی گفتار</button>
+        <button class="btn" data-act="installPWA">📲 نصب PWA</button>
+        <button class="btn" data-act="updateApp">🔄 بررسی آپدیت</button>
+      </div>
     </div>
-    <div class="muted">هر تغییری که منشی ایجاد کند، روی همه‌ی گوشی‌ها زنده (Realtime) دیده می‌شود. اگر آفلاین باشید، در صف ذخیره می‌شود و به محض اتصال ارسال می‌گردد.</div>
-  </div>
-
-  <!-- لیست نوبت‌ها -->
-  <div class="card">
-    <h2>لیست نوبت‌ها</h2>
-    <div id="apptCount" class="muted"></div>
-    <table>
-      <thead>
-        <tr><th>ویرایش</th><th>زمان</th><th>دکتر</th><th>بیمار</th></tr>
-      </thead>
-      <tbody id="apptsBody"><tr><td colspan="4" class="muted">در حال بارگذاری…</td></tr></tbody>
-    </table>
-  </div>
-
-  <!-- قیمت‌ها (بخشی از همین صفحه؛ برنامه‌ی اصلی همین است) -->
-  <div class="card">
-    <h2>ثبت قیمت خدمت</h2>
-    <div class="grid2">
-      <input id="pr_title"  placeholder="نام خدمت (مثلاً کامپوزیت)">
-      <input id="pr_amount" type="number" inputmode="numeric" placeholder="قیمت (تومان)">
+    <div class="group">
+      <h3>نقش کاربر</h3>
+      <select class="sel" id="roleSel">
+        <option value="owner">مدیر/پزشک</option>
+        <option value="reception">پذیرش</option>
+        <option value="assistant">منشی/دستیار</option>
+        <option value="cashier">صندوق</option>
+      </select>
+      <div class="help">دسترسی‌ها طبق نقش محدود می‌شود.</div>
     </div>
-    <div class="row">
-      <button class="btn" id="btnAddPrice">افزودن/ثبت</button>
+    <div class="group">
+      <h3>تم</h3>
+      <select class="sel" id="themeSel">
+        <option value="glass">گلس</option>
+        <option value="aqua">آکوا</option>
+        <option value="sunset">سانست</option>
+        <option value="dark">تیره</option>
+      </select>
     </div>
-    <div class="muted">قیمت‌ها هم Realtime هستند؛ آفلاین → صف → ارسال خودکار.</div>
+    <div class="group">
+      <h3>🧪 تست خودکار همه‌بخش‌ها</h3>
+      <div class="row">
+        <button class="btn" id="runTests">اجرای سناریوی واقعی</button>
+        <button class="btn" id="runDeep">تست عمیق همه فرم‌ها</button>
+        <button class="btn" id="copyReport">کپی گزارش</button>
+      </div>
+      <textarea id="report" class="sel" style="width:100%;height:180px;margin-top:8px" readonly>— هنوز گزارشی نیست —</textarea>
+    </div>
+  </aside>
+
+  <!-- Sheet -->
+  <div class="sheet" id="sheet">
+    <div class="scard">
+      <div class="shead">
+        <div class="stitle" id="sTitle">...</div>
+        <button class="action red" id="sClose">✖ بستن</button>
+      </div>
+      <div class="sbody" id="sBody"></div>
+      <div class="sfooter">
+        <button class="action yellow" id="sBack">↩ برگشت</button>
+        <button class="action green" id="sSubmit">✔ ثبت</button>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>لیست قیمت‌ها</h2>
-    <div id="priceCount" class="muted"></div>
-    <table>
-      <thead>
-        <tr><th>ویرایش</th><th>قیمت (تومان)</th><th>نام خدمت</th></tr>
-      </thead>
-      <tbody id="pricesBody"><tr><td colspan="3" class="muted">در حال بارگذاری…</td></tr></tbody>
-    </table>
+  <!-- AI orb -->
+  <div id="aiOrb" title="دستیار هوشمند">
+    <svg viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6">
+      <circle cx="12" cy="12" r="5" fill="white" opacity=".85"/>
+      <path d="M4 12a8 8 0 1 0 16 0" stroke-linecap="round"/>
+    </svg>
   </div>
-
-  <div class="card muted">
-    DentalOS • PWA • Supabase Realtime • Backup (Local + Cloud)
-  </div>
-</div>
-
-<!-- اسکریپت‌ها -->
-<script src="/sw-register.js"></script>
-<script type="module" src="/js/db.js"></script>
-<script type="module" src="/js/realtime.js"></script>
-<script type="module" src="/js/backup.js"></script>
 
 <script>
-  // اتصالات UI ساده
-  const $ = s => document.querySelector(s);
+/* —— ابزارک‌ها و ذخیره‌ساز —— */
+const EL = (s)=>document.querySelector(s);
+function toast(msg){ const t=document.createElement('div'); t.textContent=msg;
+  t.style.cssText="position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom));background:rgba(0,0,0,.6);color:#fff;padding:10px 14px;border-radius:12px;backdrop-filter:blur(8px);z-index:9999;";
+  document.body.appendChild(t); setTimeout(()=>t.remove(),1600); }
+const DB={ get:(k,def=null)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(def))}catch(e){return def}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
 
-  // وضعیت آنلاین/آفلاین
-  function updateOnlineBadge(){
-    const dot = $('#onlineDot'), t = $('#onlineText');
-    const on = navigator.onLine;
-    dot.className = 'dot ' + (on?'on':'off');
-    t.textContent = on ? 'آنلاین' : 'آفلاین (صف فعال است)';
-  }
-  window.addEventListener('online', updateOnlineBadge);
-  window.addEventListener('offline', updateOnlineBadge);
-  updateOnlineBadge();
+/* —— ماژول‌ها و کاشی‌ها —— */
+const ALL_TILES=[
+  {k:'events',t:'رویدادها',d:'امروز/هفته/ماه',ico:'🗓️',perm:['owner','reception','assistant','cashier'],
+    subs:[['today','امروز'],['week','این هفته'],['month','ماه'],['calendar','تقویم'],['quick','نوبت فوری']]},
+  {k:'patients',t:'بیماران',d:'لیست/افزودن/پرونده',ico:'🧑‍⚕️',perm:['owner','reception','assistant'],
+    subs:[['list','لیست'],['add','افزودن'],['profile','پرونده بیمار']]},
+  {k:'finance',t:'مالی',d:'دفتر کل/بدهکار/طلبکار/چک/اقساط',ico:'💳',perm:['owner','cashier'],
+    subs:[['ledger','دفتر کل'],['debt','بدهکار'],['credit','طلبکار'],['check','چک'],['installment','اقساط'],['daily','گزارش روزانه'],['cashbox','صندوق']]},
+  {k:'implant',t:'ایمپلنت',d:'ثبت/پیگیری',ico:'🦷',perm:['owner','assistant'],
+    subs:[['new','ثبت جراحی'],['due','پیگیری'],['list','لیست'],['sterile','چک‌لیست استریل']]},
+  {k:'inventory',t:'انبار',d:'موجودی/ورود/خروج',ico:'📦',perm:['owner','assistant'],
+    subs:[['stock','موجودی'],['in','ورود'],['out','خروج'],['low','کسری']]},
+  {k:'lab',t:'لابراتوار',d:'ارسال/دریافت/پیگیری',ico:'🏷️',perm:['owner','assistant'],
+    subs:[['send','ارسال'],['receive','دریافت'],['track','پیگیری'],['list','لیست کارها'],['bill','فاکتور']]},
+];
+const roleSel=EL('#roleSel'); roleSel.value=localStorage.getItem('DOS.role')||'owner';
+roleSel.onchange=()=>{ localStorage.setItem('DOS.role', roleSel.value); buildTiles(); rebuildBottomNav(); };
 
-  // نسخه
-  fetch('/latest.json').then(r=>r.json()).then(j=>{
-    $('#version').textContent = j?.version || 'v1';
-  }).catch(()=>{});
-
-  // هندل دکمه‌ها
-  import('/js/db.js').then(({DB})=>{
-    // افزودن نوبت
-    $('#btnAddAppt').onclick = async ()=>{
-      const obj = {
-        patient: $('#ap_patient').value.trim(),
-        doctor:  $('#ap_doctor').value.trim(),
-        time:    $('#ap_time').value,
-        note:    $('#ap_note').value.trim()
-      };
-      await DB.addAppointment(obj);
-      $('#ap_patient').value = $('#ap_doctor').value = $('#ap_time').value = $('#ap_note').value = '';
-    };
-    // افزودن قیمت
-    $('#btnAddPrice').onclick = async ()=>{
-      const obj = {
-        title:  $('#pr_title').value.trim(),
-        amount: Number($('#pr_amount').value||0)
-      };
-      await DB.addPrice(obj);
-      $('#pr_title').value = ''; $('#pr_amount').value='';
-    };
-    // همگام‌سازی معوقه
-    $('#btnSync').onclick = async ()=>{ await DB.syncPending(true); };
+const tilesWrap=EL('#tiles'); const bnav=EL('#bnav'); const droplet=EL('#drop');
+function buildTiles(){ tilesWrap.innerHTML=''; ALL_TILES.filter(t=>t.perm.includes(roleSel.value)).forEach(o=>{
+  const d=document.createElement('div'); d.className='tile'; d.dataset.k=o.k;
+  d.innerHTML=`<div class="icon">${o.ico}</div><div class="t">${o.t}</div><div class="d">${o.d}</div><button class="optbtn" type="button">⋮</button>`;
+  d.addEventListener('click',()=>openEntry(o.k));
+  d.querySelector('.optbtn').addEventListener('click',(ev)=>{ ev.stopPropagation(); openTileOptions(o.k); });
+  tilesWrap.appendChild(d);
+}); }
+function rebuildBottomNav(){
+  bnav.querySelectorAll('.item').forEach(n=>n.remove());
+  ALL_TILES.filter(t=>t.perm.includes(roleSel.value)).forEach(o=>{
+    const it=document.createElement('div'); it.className='item'; it.dataset.k=o.k;
+    it.innerHTML=`<div class="ico">${o.ico}</div><div class="label">${o.t}</div>`;
+    it.onclick=()=>{ setActiveNav(o.k); openEntry(o.k); };
+    bnav.appendChild(it);
   });
+  bnav.prepend(droplet);
+}
+function setActiveNav(k){
+  bnav.querySelectorAll('.item').forEach(i=>i.classList.toggle('active', i.dataset.k===k));
+  DB.set('DOS.active', k);
+}
+buildTiles(); rebuildBottomNav(); setActiveNav(DB.get('DOS.active','events'));
 
-  // توابع رندر برای استفاده در db.js
-  window.renderAppointments = function(list){
-    $('#apptCount').textContent = `تعداد ${list.length} مورد`;
-    const tbody = $('#apptsBody');
-    if(!list.length){ tbody.innerHTML = `<tr><td colspan="4" class="muted">هنوز نوبتی ثبت نشده است.</td></tr>`; return; }
-    tbody.innerHTML = list.map(r=>`
-      <tr>
-        <td><small class="badge">#${r.id}</small></td>
-        <td>${new Date(r.time).toLocaleString('fa-IR')}</td>
-        <td>${r.doctor||'-'}</td>
-        <td>${r.patient||'-'}</td>
-      </tr>
-    `).join('');
-  };
+/* —— شیت‌ها و فرم‌ها —— */
+const sheet=EL('#sheet'), sBody=EL('#sBody'), sTitle=EL('#sTitle');
+const sClose=EL('#sClose'), sBack=EL('#sBack'), sSubmit=EL('#sSubmit');
+function openSheet(title, content){ sTitle.textContent=title||' '; sBody.innerHTML=''; if(typeof content==='string') sBody.innerHTML=content; else sBody.appendChild(content); sheet.classList.add('open'); }
+function closeSheet(){ sheet.classList.remove('open'); }
+function setHandlers(onSubmit,onBack,onClose){ sSubmit.onclick=onSubmit||(()=>{}); sBack.onclick=onBack||closeSheet; sClose.onclick=onClose||closeSheet; }
 
-  window.renderPrices = function(list){
-    $('#priceCount').textContent = `تعداد ${list.length} مورد`;
-    const tbody = $('#pricesBody');
-    if(!list.length){ tbody.innerHTML = `<tr><td colspan="3" class="muted">هنوز قیمتی ثبت نشده است.</td></tr>`; return; }
-    tbody.innerHTML = list.map(r=>`
-      <tr>
-        <td><small class="badge">#${r.id}</small></td>
-        <td>${(r.amount||0).toLocaleString('fa-IR')}</td>
-        <td>${r.title||'-'}</td>
-      </tr>
-    `).join('');
-  };
+function F(legend, fields){ const fs=document.createElement('fieldset'); const lg=document.createElement('legend'); lg.textContent=legend; fs.appendChild(lg);
+  fields.forEach(f=>{ const lab=document.createElement('label'); lab.textContent=f.l; if(f.tag==='select'){ const sel=document.createElement('select'); sel.name=f.n; (f.list||[]).forEach(v=>{ const o=document.createElement('option'); o.value=o.textContent=v; sel.appendChild(o); }); fs.append(lab, sel); }
+  else { const el=(f.tag==='textarea')?document.createElement('textarea'):document.createElement('input'); el.name=f.n; if(f.type) el.type=f.type; fs.append(lab, el); } }); return fs; }
+
+function buildForm(modKey, subKey){
+  const el=document.createElement('div');
+  if(modKey==='events'){
+    if(subKey==='today'){ el.appendChild(F('رویدادهای امروز',[{l:'فیلتر نوع',n:'type',tag:'select',list:['همه','ویزیت','جرم‌گیری','پرکردگی','ایمپلنت']} ])); }
+    if(subKey==='quick'){ el.appendChild(F('نوبت فوری',[{l:'بیمار',n:'pt'},{l:'خدمت',n:'srv',tag:'select',list:['ویزیت','جرم‌گیری','پرکردگی','ایمپلنت']},{l:'ساعت',n:'t',type:'time'}])); }
+    if(subKey==='calendar'){ const host=document.createElement('div'); buildCalendar(host,new Date()); el.appendChild(host); }
+  }
+  if(modKey==='patients'){
+    if(subKey==='add'){ el.appendChild(F('افزودن بیمار',[{l:'نام',n:'name'},{l:'موبایل',n:'tel'},{l:'کدملی',n:'nid'},{l:'یادداشت',n:'note',tag:'textarea'}])); }
+    if(subKey==='list'){ const arr=DB.get('DOS.PATIENTS',[]); const tbl=document.createElement('div'); tbl.innerHTML= arr.length?('<table style="width:100%"><tr><th>نام</th><th>موبایل</th><th>کدملی</th></tr>'+arr.map(p=>`<tr><td>${p.name}</td><td>${p.tel||''}</td><td>${p.nid||''}</td></tr>`).join('')+'</table>'):'<div class="mini">موردی نیست.</div>'; el.appendChild(tbl); }
+  }
+  if(modKey==='finance'){
+    if(subKey==='installment'){ el.appendChild(F('تعریف اقساط',[{l:'بیمار',n:'pt'},{l:'کل مبلغ',n:'total',type:'number'},{l:'پیش‌پرداخت',n:'pre',type:'number'},{l:'تعداد اقساط',n:'n',type:'number'}])); }
+    if(subKey==='check'){ el.appendChild(F('ثبت چک',[{l:'نام',n:'p'},{l:'مبلغ',n:'amt',type:'number'},{l:'سررسید',n:'due',type:'date'}])); }
+  }
+  if(modKey=='implant'){
+    if(subKey=='new'){ el.appendChild(F('ثبت جراحی ایمپلنت',[{l:'نام بیمار',n:'pt'},{l:'فک/نواحی',n:'area',tag:'select',list:['فک بالا','فک پایین','قدام','خلف']},{l:'تعداد ایمپلنت',n:'count',type:'number'},{l:'تاریخ جراحی',n:'date',type:'date'},{l:'یادداشت',n:'note',tag:'textarea'}])); }
+    if(subKey=='due'){ el.appendChild(F('پیگیری',[{l:'کد/نام بیمار',n:'pt'},{l:'موضوع پیگیری',n:'topic',tag:'select',list:['بخیه','پانسمان','پروتز','معاینه']}])); }
+    if(subKey=='list'){ el.appendChild(F('لیست جراحی‌ها (فیلتر)',[{l:'از تاریخ',n:'from',type:'date'},{l:'تا تاریخ',n:'to',type:'date'}])); }
+    if(subKey=='sterile'){ el.appendChild(F('چک‌لیست استریل',[{l:'اتوکلاو OK',n:'autoclave',tag:'select',list:['بله','خیر']},{l:'ست جراحی کامل',n:'kit',tag:'select',list:['بله','خیر']},{l:'یادداشت',n:'note',tag:'textarea'}])); }
+  }
+  if(modKey=='inventory'){
+    if(subKey=='stock'){ el.appendChild(F('موجودی کالا',[{l:'نام کالا/کد',n:'item'},{l:'گزارش تا تاریخ',n:'date',type:'date'}])); }
+    if(subKey=='in'){ el.appendChild(F('ورود کالا',[{l:'نام کالا',n:'item'},{l:'تعداد',n:'qty',type:'number'},{l:'تأمین‌کننده',n:'vendor'},{l:'تاریخ',n:'date',type:'date'}])); }
+    if(subKey=='out'){ el.appendChild(F('خروج کالا',[{l:'نام کالا',n:'item'},{l:'تعداد',n:'qty',type:'number'},{l:'مصرف برای',n:'use',tag:'select',list:['درمان','فروش','دیگر']},{l:'تاریخ',n:'date',type:'date'}])); }
+    if(subKey=='low'){ el.appendChild(F('کسری/حداقل موجودی',[{l:'آستانهٔ هشدار',n:'min',type:'number'}])); }
+  }
+  if(modKey=='lab'){
+    if(subKey=='send'){ el.appendChild(F('ارسال به لابراتوار',[{l:'بیمار',n:'pt'},{l:'نوع کار',n:'job',tag:'select',list:['روکش','بریج','دندان مصنوعی','اوردنچر']},{l:'تاریخ ارسال',n:'date',type:'date'},{l:'یادداشت',n:'note',tag:'textarea'}])); }
+    if(subKey=='receive'){ el.appendChild(F('دریافت از لابراتوار',[{l:'شماره سفارش',n:'code'},{l:'تاریخ دریافت',n:'date',type:'date'},{l:'وضعیت',n:'status',tag:'select',list:['کامل','ناقص','نیاز به اصلاح']}])); }
+    if(subKey=='track'){ el.appendChild(F('پیگیری کار لابراتوار',[{l:'شماره/بیمار',n:'q'}])); }
+    if(subKey=='bill'){ el.appendChild(F('ثبت هزینه لابراتوار',[{l:'لابراتوار',n:'lab'},{l:'مبلغ',n:'amt',type:'number'},{l:'تاریخ',n:'date',type:'date'}])); }
+  }
+  return el;
+}
+function openEntry(k){ setActiveNav(k); const mod=ALL_TILES.find(x=>x.k===k); const box=document.createElement('div'); box.innerHTML='<div class="mini">یک عمل را انتخاب کنید:</div>';
+  (mod.subs||[]).forEach(([sk,lab])=>{ const b=document.createElement('button'); b.className='btn'; b.style.margin='8px 6px 0 0'; b.textContent=lab; b.onclick=()=>openRoute(mod.k, sk); box.appendChild(b); });
+  openSheet(mod.t+' • انتخاب عمل', box); setHandlers(null, closeSheet, closeSheet); }
+function openRoute(modKey, subKey){ setActiveNav(modKey); const host=buildForm(modKey, subKey); const title=(ALL_TILES.find(t=>t.k===modKey).t)+' • '+(ALL_TILES.find(t=>t.k===modKey).subs.find(s=>s[0]===subKey)[1]);
+  openSheet(title, host); setHandlers(()=>submitForm(modKey, subKey), ()=>openEntry(modKey), closeSheet); }
+function submitForm(modKey, subKey){ const data={}; sBody.querySelectorAll('input,select,textarea').forEach(i=>data[i.name]=i.value);
+  if(modKey==='patients' && subKey==='add'){ const arr=DB.get('DOS.PATIENTS',[]); arr.push(data); DB.set('DOS.PATIENTS',arr); }
+  DB.set(`DOS.${modKey}.${subKey}.last`, {at:Date.now(), data}); toast('ثبت شد ✅'); }
+
+/* —— تقویم جلالی کلاسیک + میانبرها —— */
+function d2j(gy,gm,gd){const gdm=[0,31,59,90,120,151,181,212,243,273,304,334];gy-=1600;gm--;gd--;let g=365*gy+((gy+3)>>2)-((gy+99)>>2)+((gy+399)>>2);g+=gdm[gm]+gd;if(gm>1&&((gy%4==0&&gy%100!=0)||(gy%400==0)))g++;let j=g-79;let np=(j/12053)|0;j%=12053;let jy=979+33*np+4*((j/1461)|0);j%=1461;if(j>=366){jy+=(j-1)/365|0;j=(j-1)%365}let jm=(j<186)?1+(j/31|0):7+((j-186)/30|0);let jd=1+((j<186)?(j%31):((j-186)%30));return[jy,jm,jd]}
+function jMonthLen(jy,jm){return jm<=6?31:jm<=11?30:29}
+function j2g(jy,jm,jd){jy-=979;let j=365*jy+((jy/33)|0)*8+(((jy%33)+3)/4|0);for(let i=1;i<jm;i++)j+=i<=6?31:i<=11?30:29;j+=jd-1;let g=j+79;let gy=1600+400*((g/146097)|0);g%=146097;if(g>=36525){g--;gy+=100*((g/36524)|0);g%=36524;if(g>=365)g--}gy+=4*((g/1461)|0);g%=1461;if(g>=366){g--;gy+=(g/365)|0;g%=365}function gml(y,m){return[31,((y%4==0&&y%100!=0)||(y%400==0))?29:28,31,30,31,30,31,31,30,31,30,31][m-1]}let gm=1;for(;gm<=12&&g>=gml(gy,gm);gm++){g-=gml(gy,gm)}let gd=g+1;return[gy,gm,gd]}
+function buildCalendar(container,date=new Date()){ const [jy,jm,jd]=d2j(date.getFullYear(),date.getMonth()+1,date.getDate()); renderCal(container,jy,jm,jd); }
+function renderCal(container,jy,jm,today_d){
+  container.innerHTML=''; const wrap=document.createElement('div'); const head=document.createElement('div'); head.className='calhead';
+  const ttl=document.createElement('div'); ttl.textContent=`تقویم • ${jy}/${String(jm).padStart(2,'0')}`;
+  const prev=document.createElement('button'); prev.className='btn'; prev.textContent='◀';
+  const next=document.createElement('button'); next.className='btn'; next.textContent='▶';
+  prev.onclick=()=>{ const njm=jm===1?12:jm-1; const njy=jm===1?jy-1:jy; renderCal(container, njy, njm, null); };
+  next.onclick=()=>{ const njm=jm===12?1:jm+1; const njy=jm===12?jy+1:jy; renderCal(container, njy, njm, null); };
+  head.append(prev, ttl, next);
+  const grid=document.createElement('div'); grid.className='calgrid';
+  'ش ی د س چ پ ج'.split(' ').forEach(d=>{ const e=document.createElement('div'); e.className='caldow'; e.textContent=d; grid.appendChild(e); });
+  const [gy1,gm1,gd1]=j2g(jy,jm,1); const wk=new Date(gy1,gm1-1,gd1).getDay(); const start=(wk+1)%7;
+  for(let i=0;i<start;i++){ const e=document.createElement('div'); e.className='calday hidden'; grid.appendChild(e); }
+  const len=jMonthLen(jy,jm); for(let d=1; d<=len; d++){ const e=document.createElement('div'); e.className='calday'; e.textContent=d; if(d===today_d) e.classList.add('today');
+    const plus=document.createElement('span'); plus.className='plus'; plus.textContent='+'; e.appendChild(plus);
+    let holdTimer=null; let longPressed=false;
+    e.addEventListener('pointerdown', ()=>{ longPressed=false; holdTimer=setTimeout(()=>{ longPressed=true; openRoute('events','quick'); }, 700); });
+    e.addEventListener('pointerup', ()=>{ clearTimeout(holdTimer); if(!longPressed){ openRoute('events','today'); } });
+    e.addEventListener('pointerleave', ()=>{ clearTimeout(holdTimer); });
+    grid.appendChild(e);
+  }
+  wrap.append(head, grid); container.appendChild(wrap);
+}
+buildCalendar(EL('#calHost'), new Date());
+
+/* —— منو همبرگری —— */
+const hamb=EL('#hamb'), sidemenu=EL('#sidemenu'), backdrop=EL('#backdrop');
+function closeMenu(){ hamb.classList.remove('active'); sidemenu.classList.remove('open'); backdrop.classList.remove('show'); }
+hamb.onclick=()=>{ hamb.classList.toggle('active'); sidemenu.classList.toggle('open'); backdrop.classList.toggle('show'); };
+backdrop.onclick=closeMenu;
+sidemenu.addEventListener('click',(e)=>{
+  const act=e.target.closest('[data-act]'); if(!act) return;
+  if(act.dataset.act==='askNoti'){ if('Notification' in window) Notification.requestPermission().then(p=>toast(p==='granted'?'اعلان فعال شد':'اجازه داده نشد')); else toast('اعلان پشتیبانی نمی‌شود'); }
+  if(act.dataset.act==='askMic'){ navigator.mediaDevices?.getUserMedia({audio:true}).then(()=>toast('دسترسی میکروفون OK')).catch(()=>toast('رد شد')); }
+  if(act.dataset.act==='installPWA'){ promptPWA(); }
+  if(act.dataset.act==='updateApp'){ toast('برای آپدیت، فایل جدید را جایگزین کنید.'); }
+});
+
+/* —— جستجو + گفتار —— */
+const micBtn=EL('#micBtn'), q=EL('#q'); let rec=null, recognizing=false;
+function ensureRecognizer(){ const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){ toast('SpeechRecognition پشتیبانی نمی‌شود'); return null; } const r=new SR(); r.lang='fa-IR'; r.interimResults=true; r.continuous=false; r.onresult=(ev)=>{ let txt=''; for(const res of ev.results){ txt+=res[0].transcript } q.value=txt; }; r.onend=()=>{ recognizing=false; micBtn.classList.remove('rec'); }; return r; }
+micBtn.onclick=()=>{ if(recognizing){ rec&&rec.stop(); return; } if(!rec) rec=ensureRecognizer(); if(!rec) return; recognizing=true; micBtn.classList.add('rec'); try{ rec.start(); }catch(e){} };
+EL('#searchBtn').onclick=runSearch; q.addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(); });
+function runSearch(){ const v=q.value.trim(); if(!v){ toast('متنی وارد کنید'); return; }
+  if(/امروز|today/i.test(v)) openRoute('events','today');
+  else if(/نوبت|وقت/.test(v)) openRoute('events','quick');
+  else if(/چک/.test(v)) openRoute('finance','check');
+  else if(/قسط|اقساط/.test(v)) openRoute('finance','installment');
+  else if(/بیمار/.test(v)) openRoute('patients','list');
+  else openSheet('نتیجه جستجو','جستجوی آفلاین نتیجهٔ دقیقی پیدا نکرد.'); }
+
+/* —— اورب AI: جابه‌جایی —— */
+(function(){ const orb=EL('#aiOrb'); const pos=DB.get('DOS.ai.pos',null);
+  if(pos){ orb.style.left=pos.l; orb.style.top=pos.t; orb.style.right='auto'; orb.style.bottom='auto'; }
+  let dragging=false, dx=0, dy=0;
+  orb.addEventListener('pointerdown', (e)=>{ dragging=true; const r=orb.getBoundingClientRect(); dx=e.clientX-r.left; dy=e.clientY-r.top; orb.setPointerCapture(e.pointerId); });
+  window.addEventListener('pointermove', (e)=>{ if(!dragging) return; orb.style.left=(e.clientX-dx)+'px'; orb.style.top=(e.clientY-dy)+'px'; orb.style.right='auto'; orb.style.bottom='auto'; });
+  window.addEventListener('pointerup', ()=>{ if(!dragging) return; dragging=false; DB.set('DOS.ai.pos',{l:orb.style.left,t:orb.style.top}); });
+  orb.addEventListener('click', ()=> q.focus() );
+})();
+
+/* —— افکت قطره زیر نوار پایین —— */
+(function(){
+  const bnav=EL('#bnav'); const droplet=EL('#drop');
+  let active = false;
+  function move(e){
+    if(!active) return;
+    const rect = bnav.getBoundingClientRect();
+    const x = Math.max(rect.left+36, Math.min(e.clientX, rect.right-36));
+    const y = rect.top + rect.height/2;
+    droplet.style.transform = `translate(${x-36}px, ${y-36}px)`;
+  }
+  bnav.addEventListener('pointerdown', (e)=>{ active=true; droplet.classList.add('show'); move(e); });
+  window.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', ()=>{ active=false; droplet.classList.remove('show'); });
+})();
+
+/* —— تنظیمات کاشی —— */
+function openTileOptions(k){ const mod=ALL_TILES.find(x=>x.k===k); const wrap=document.createElement('div'); wrap.innerHTML=`<div class="mini">تنظیمات «${mod.t}»</div>`; (mod.subs||[]).forEach(([sk,lab])=>{ const b=document.createElement('button'); b.className='btn'; b.textContent=lab; b.onclick=()=>openRoute(mod.k, sk); wrap.appendChild(b); }); openSheet('تنظیمات کاشی', wrap); setHandlers(null, closeSheet, closeSheet); }
+
+/* —— تست خودکار —— */
+function simulateFill(){ const inputs=sBody.querySelectorAll('input,select,textarea'); inputs.forEach((el,i)=>{ if(el.tagName==='SELECT'){ el.selectedIndex=Math.min(1, el.options.length-1); } else if(el.type==='time'){ el.value='10:00'; } else if(el.type==='date'){ el.value=new Date().toISOString().slice(0,10); } else if(el.type==='number'){ el.value=100000*(i+1); } else { el.value= el.placeholder || 'نمونه'; } }); }
+function runScenario(){
+  const R=[]; const roleWas=roleSel.value;
+  function log(ok,msg){ R.push((ok?'✅ ':'❌ ')+msg); }
+  const ptName='بیمار نمونه ' + Math.floor(Math.random()*1000);
+  openRoute('patients','add'); setTimeout(()=>{
+    try{ sBody.querySelector('[name="name"]').value=ptName; sBody.querySelector('[name="tel"]').value='09120000000'; submitForm('patients','add'); log(true,'patients/add: ثبت بیمار'); }
+    catch(e){ log(false,'patients/add: خطا '+e.message); }
+    openRoute('events','quick'); setTimeout(()=>{
+      try{ sBody.querySelector('[name="pt"]').value=ptName; sBody.querySelector('[name="t"]').value='11:00'; submitForm('events','quick'); log(true,'events/quick: نوبت برای بیمار ثبت شد'); }
+      catch(e){ log(false,'events/quick: خطا '+e.message); }
+      openRoute('finance','installment'); setTimeout(()=>{
+        try{ sBody.querySelector('[name="pt"]').value=ptName; sBody.querySelector('[name="total"]').value=2000000; sBody.querySelector('[name="pre"]').value=0; sBody.querySelector('[name="n"]').value=4; submitForm('finance','installment'); log(true,'finance/installment: قسط برای بیمار ساخته شد'); }
+        catch(e){ log(false,'finance/installment: خطا '+e.message); }
+        try{
+          const pts=DB.get('DOS.PATIENTS',[]); const found=pts.some(p=>p.name===ptName);
+          log(found,'بررسی لیست بیماران در ذخیره‌ساز');
+        }catch(e){ log(false,'خواندن ذخیره‌ساز بیماران'); }
+        if('Notification' in window){
+          Notification.requestPermission().then(p=>{
+            if(p==='granted'){ new Notification('DentalOS',{body:`یادآور تست برای ${ptName}`}); log(true,'اعلان نمونه ارسال شد'); after(); }
+            else { log(false,'اجازه اعلان داده نشد'); after(); }
+          });
+        } else { log(false,'مرورگر اعلان ندارد'); after(); }
+      },130);
+    },130);
+  },130);
+  function after(){ roleSel.value=roleWas; buildTiles(); rebuildBottomNav(); EL('#report').value=R.join('\n'); toast('تست سناریوی واقعی تمام شد'); }
+}
+EL('#runTests').onclick=runScenario;
+
+function runDeep(){
+  const R=[]; let i=0; const plans=[];
+  ALL_TILES.forEach(m=> (m.subs||[]).forEach(s=> plans.push([m.k,s[0]])));
+  function log(ok,msg){ R.push((ok?'✅ ':'❌ ')+msg); }
+  function step(){
+    if(i>=plans.length){ EL('#report').value=R.join('\n'); toast('تست عمیق تمام شد'); return; }
+    const [mk,sk]=plans[i++];
+    try{
+      openRoute(mk,sk);
+      setTimeout(()=>{ simulateFill(); try{ submitForm(mk,sk); log(true, mk+'/'+sk+': ثبت شد'); } catch(e){ log(false, mk+'/'+sk+': خطا') } setTimeout(step,90); },70);
+    }catch(e){ log(false, mk+'/'+sk+': باز نشد'); setTimeout(step,60); }
+  }
+  step();
+}
+EL('#runDeep').onclick=runDeep;
+EL('#copyReport').onclick=()=>{ const ta=EL('#report'); ta.select(); try{ navigator.clipboard.writeText(ta.value).then(()=>toast('کپی شد')); }catch(e){ document.execCommand('copy'); toast('کپی شد'); } };
+
+/* —— PWA —— */
+let deferredPrompt=null; window.addEventListener('beforeinstallprompt',(e)=>{ e.preventDefault(); deferredPrompt=e; });
+function promptPWA(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; } else toast('در این مرورگر گزینهٔ نصب در دسترس نیست.'); }
+
+/* —— تم‌ها —— */
+EL('#themeSel').onchange=e=>{ const v=e.target.value; if(v==='aqua'){ document.body.style.background='linear-gradient(180deg,#06141f,#093a5c)'; } else if(v==='sunset'){ document.body.style.background='linear-gradient(180deg,#190a14,#4b112a,#0e1226)'; } else if(v==='dark'){ document.body.style.background='linear-gradient(180deg,#06060a,#0b0b0f)'; } else { location.reload(); } };
 </script>
+
+<!-- —— وصله‌های تقویم جلالی زنده و تقویم V2 (فقط افزودن) ——
+     * شامل هدر زنده، ساعت، همگام با دستگاه، طول ماه دقیق، شناسایی «امروز»
+     * تعامل‌ها: لمس کوتاه=لیست همه رویدادها، نگه‌داشتن=ثبت رویداد همان روز  -->
+<style>
+/* استایل‌های هدر زنده و «امروز» براق داخل تقویم */
+.jalali-live-header{font-weight:700;font-size:clamp(14px,3.4vw,22px);display:flex;gap:.55rem;justify-content:center;background:linear-gradient(135deg,#9ae6ff,#b6f3c6,#ffd28f,#ff9ac0);-webkit-background-clip:text;background-clip:text;color:transparent;margin:.25rem auto .5rem}
+.jalali-live-header .clock{font-variant-numeric:tabular-nums;background:rgba(255,255,255,.1);color:#fff;padding:.15rem .5rem;border-radius:10px;border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px)}
+.cal-grid .day{display:flex;align-items:center;justify-content:center;height:46px;border-radius:16px;border:1px solid rgba(255,255,255,.10);background:radial-gradient(120% 150% at 50% -20%, rgba(255,255,255,.18), rgba(120,160,220,.06) 50%, rgba(255,255,255,.04) 100%);color:#e9f3ff;font-weight:700}
+.cal-grid .day.empty{visibility:hidden}
+#calHost .day.today{position:relative;background:radial-gradient(140% 120% at 10% 5%, rgba(255,255,255,.9), rgba(180,225,255,.55) 32%, rgba(150,210,255,.35) 50%, rgba(110,160,255,.2) 70%, rgba(90,120,220,.12) 90%);box-shadow:inset 0 1px 0 rgba(255,255,255,.65), inset 0 -2px 6px rgba(0,0,0,.18), 0 10px 26px rgba(0,30,90,.28), 0 2px 8px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.45)!important;outline:2px solid rgba(0,220,255,.35)}
+#calHost .day.today::after{content:"امروز";position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:.7em;color:#0b3868;opacity:.9;font-weight:700}
+</style>
+<script>
+/* تقویم ساده اضافه + هدر زنده (نسخه سبک) */
+(function(){
+  const host = document.getElementById('calHost'); if(!host) return;
+  const PDS=['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹']; const toFa=s=>String(s).replace(/[0-9]/g,d=>PDS[d]);
+  const MONTH = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  function d2j(gy,gm,gd){const gdm=[0,31,59,90,120,151,181,212,243,273,304,334];gy-=1600;gm--;gd--;let g=365*gy+((gy+3)>>2)-((gy+99)>>2)+((gy+399)>>2);g+=gdm[gm]+gd;if(gm>1&&((gy%4==0&&y%100!=0)||(gy%400==0)))g++;let j=g-79;let np=(j/12053)|0;j%=12053;let jy=979+33*np+4*((j/1461)|0);j%=1461;if(j>=366){jy+=(j-1)/365|0;j=(j-1)%365}let jm=(j<186)?1+(j/31|0):7+((j-186)/30|0);let jd=1+((j<186)?(j%31):((j-186)%30));return[jy,jm,jd]}
+  function j2g(jy,jm,jd){jy-=979;let j=365*jy+((jy/33)|0)*8+(((jy%33)+3)/4|0);for(let i=1;i<jm;i++)j+=i<=6?31:i<=11?30:29;j+=jd-1;let g=j+79;let gy=1600+400*((g/146097)|0);g%=146097;if(g>=36525){g--;gy+=100*((g/36524)|0);g%=36524;if(g>=365)g--}gy+=4*((g/1461)|0);g%=1461;if(g>=366){g--;gy+=(g/365)|0;g%=365}function gml(y,m){return[31,((y%4==0&&y%100!=0)||(y%400==0))?29:28,31,30,31,30,31,31,30,31,30,31][m-1]}let gm=1;for(;gm<=12&&g>=gml(gy,gm);gm++){g-=gml(gy,gm)}let gd=g+1;return[gy,gm,gd]}
+  function jMonthLen(jy,jm){let njy=jy, njm=jm+1; if(njm===13){ njy++; njm=1; } const a=j2g(jy,jm,1), b=j2g(njy,njm,1); const da=new Date(a[0],a[1]-1,a[2]), db=new Date(b[0],b[1]-1,b[2]); return Math.round((db-da)/86400000);}
+  // هدر زنده
+  const head=document.createElement('div'); head.className='jalali-live-header'; head.innerHTML='<span class="wday">—</span><span class="date">—</span><span class="month">—</span><span class="year">—</span><span class="clock">--:--:--</span>'; host.prepend(head);
+  function tick(){ const now=new Date(); const h=String(now.getHours()).padStart(2,'0'), m=String(now.getMinutes()).padStart(2,'0'), s=String(now.getSeconds()).padStart(2,'0');
+    const d2=d2j(now.getFullYear(),now.getMonth()+1,now.getDate()); head.querySelector('.clock').textContent=toFa(`${h}:${m}:${s}`);
+    head.querySelector('.date').textContent=toFa(d2[2]); head.querySelector('.month').textContent=MONTH[d2[1]-1]; head.querySelector('.year').textContent=toFa(d2[0]);
+    head.querySelector('.wday').textContent=['شنبه','یک‌شنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه'][(now.getDay()+1)%7]; }
+  tick(); setInterval(tick,1000);
+})();
+</script>
+
 </body>
 </html>
