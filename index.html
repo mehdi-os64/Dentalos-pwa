@@ -1,122 +1,263 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html dir="rtl" lang="fa">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>DentalOS • PWA</title>
-
-  <!-- رنگ نوار مرورگر -->
-  <meta name="theme-color" content="#0b1020" />
-
-  <!-- PWA Manifest (مسیر نسبی تا با ریشه‌ی دامنه تداخل نکند) -->
-  <link rel="manifest" href="./manifest.webmanifest" />
-
-  <!-- آیکون‌ها (در صورت تفاوت نام فایل‌ها، اصلاح کن) -->
-  <link rel="apple-touch-icon" href="./icons/tooth-180.png" sizes="180x180" />
-  <link rel="icon" type="image/png" href="./icons/tooth-192.png" sizes="192x192" />
-  <link rel="icon" type="image/png" href="./icons/tooth-512.png" sizes="512x512" />
-
-  <!-- iOS PWA -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="DentalOS" />
-
+  <meta name="theme-color" content="#0b1020">
   <style>
-    /* می‌تونی استایل اصلی خودت را نگه داری؛ این فقط یک پایه‌ی ساده‌ست */
+    /* Dark theme variables and UI styling */
     :root{
-      --bg:#0b1020; --text:#eaf3ff; --muted:#b6c2d1; --accent:#00e5ff;
+      --bg: #0b1020;
+      --stroke: rgba(255,255,255,.22);
+      --glass: linear-gradient(180deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.02) 100%);
+      --blur: 18px;
+      --text: #eaf3ff;
+      --muted: #b6c2d1;
+      --accent: #00e5ff;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body{ height:100%; margin:0; }
     body{
-      margin:0; color:var(--text); background:radial-gradient(60rem 60rem at 10% -10%, rgba(61,140,255,.12), transparent 60%),
-                                   radial-gradient(50rem 50rem at 110% 10%, rgba(0,229,255,.10), transparent 55%),
-                                   linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0b1020 100%);
-      font-family: ui-rounded, "Vazirmatn", "IRANSans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-family: ui-rounded,"Vazirmatn","IRANSans",system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(60rem 60rem at 10% -10%,rgba(61,0,115,.3),rgba(0,0,0,0)),
+        radial-gradient(50rem 50rem at 110% 10%,rgba(0,155,222,.2),rgba(0,0,0,0)),
+        linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#081019 100%);
+      overflow:hidden;
     }
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px;backdrop-filter:blur(12px)}
-    .muted{color:var(--muted)}
-    .okdot{width:.6rem;height:.6rem;background:#18c964;border-radius:50%;display:inline-block;margin-inline-start:.35rem}
+    header{
+      position:fixed; top:0; left:0; right:0;
+      height:64px; padding:0 clamp(10px,3vw,18px);
+      display:flex; align-items:center; justify-content:space-between;
+      background:linear-gradient(180deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.02) 100%);
+      backdrop-filter:blur(var(--blur)) saturate(140%);
+      z-index:90;
+      border-bottom:1px solid var(--stroke);
+    }
+    header h1{ margin:0; font-size:1.2rem; color:var(--text); font-weight:700; }
+    header .dot{
+      width:10px; height:10px; border-radius:50%;
+      background:var(--accent); margin-left:6px; display:inline-block;
+    }
+    .container{ padding:80px 20px 40px; }
+    .card{
+      background:var(--glass);
+      border:1px solid var(--stroke);
+      border-radius:12px;
+      padding:20px;
+      margin-bottom:20px;
+      backdrop-filter:blur(var(--blur)) saturate(140%);
+    }
+    .inputs{ display:flex; flex-wrap:wrap; gap:10px; }
+    .inputs input{
+      flex:1 1 calc(50% - 10px);
+      min-width:120px;
+      background:rgba(255,255,255,.08);
+      border:none; border-radius:8px;
+      padding:10px; color:var(--text); font-size:16px;
+    }
+    .inputs button{
+      flex-basis:100%;
+      padding:10px 15px;
+      border:none; border-radius:8px;
+      font-size:16px;
+      cursor:pointer;
+      color:var(--bg);
+      background:var(--accent);
+    }
+    #syncBtn{
+      background:#34495e;
+      color:var(--text);
+      margin-top:5px;
+    }
+    .desc{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:12px; margin-bottom:0;
+      line-height:1.5;
+    }
+    .list{ margin-top:20px; border-top:1px solid var(--stroke); padding-top:10px; }
+    .list table{ width:100%; border-collapse:collapse; font-size:14px; }
+    .list th,.list td{
+      padding:6px 4px;
+      border-bottom:1px solid var(--stroke);
+    }
+    .list th{ text-align:left; color:var(--muted); }
+    .list td button{
+      padding:4px 8px;
+      border:none;
+      border-radius:4px;
+      font-size:12px;
+      cursor:pointer;
+      background:var(--accent);
+      color:var(--bg);
+    }
+    footer{ margin-top:40px; text-align:center; color:var(--muted); font-size:12px; }
   </style>
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <!-- iOS support -->
+  <link rel="apple-touch-icon" href="icons/tooth-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#0b1020">
+  <meta name="apple-mobile-web-app-title" content="DentalOS">
 </head>
 <body>
-  <!-- ===== محتوای برنامهٔ تو =====
-       اگر بدنهٔ اختصاصی داری، می‌تونی همین ساختار را نگه داری یا کلاً محتوای خودت را اینجا قرار بدی. -->
-  <div class="wrap">
+  <header><h1><span class="dot"></span>DentalOS • PWA</h1></header>
+  <main class="container">
     <div class="card">
-      <h1 style="margin:0 0 6px">DentalOS <small class="muted">• PWA</small><span class="okdot" title="Online"></span></h1>
-      <p class="muted" style="margin:6px 0 0">نسخهٔ بهینه‌شده با PWA، سرویس‌ورکر، Supabase Realtime، و بکاپ/همگام‌سازی.</p>
+      <div class="inputs">
+        <input id="service" type="text" placeholder="نام خدمت (مثلاً: کامپوزیت)">
+        <input id="price" type="number" placeholder="قیمت (تومان)">
+        <button id="addBtn">ثبت/افزودن</button>
+        <button id="syncBtn">سینک آفلاین‌ها</button>
+      </div>
+      <p class="desc">
+        تغییراتی که منشی یا شما ثبت کنید، بلافاصله روی تمام گوشی‌ها نمایش داده می‌شود (Realtime).
+        در حالت آفلاین، در صف ذخیره می‌شود و پس از اتصال اینترنت، خودکار اعمال می‌گردد.
+      </p>
     </div>
-  </div>
+    <div class="card list">
+      <table>
+        <thead>
+          <tr>
+            <th>نام خدمت</th>
+            <th>قیمت (تومان)</th>
+            <th>ویرایش</th>
+          </tr>
+        </thead>
+        <tbody id="pricesBody">
+          <tr><td colspan="3" style="text-align:center;color:var(--muted);">هنوز قیمتی ثبت نشده است.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <footer>DentalOS • PWA • Supabase Realtime • Backup &amp; Auto‑Update</footer>
+  </main>
 
-  <noscript>برای استفاده از برنامه، جاوااسکریپت باید فعال باشد.</noscript>
-
-  <!-- Supabase: مقداردهی با اطلاعاتی که دادی -->
-  <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    // *** داده‌هایی که خودت دادی ***
-    const SUPABASE_URL = "https://poubooxbvvzbwyjlfmaj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ";
-
-    // ساخت کلاینت و در دسترس قرار دادن برای سایر اسکریپت‌ها (مثل backup.js)
-    window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // نمونه‌ی ساده‌ی بررسی اتصال و نمایش نقطه سبز/خاکستری
-    const dot = document.querySelector('.okdot');
-    const ping = () => navigator.onLine ? dot.style.background = '#18c964' : dot.style.background = '#999';
-    window.addEventListener('online', ping);
-    window.addEventListener('offline', ping);
-    ping();
-  </script>
-
-  <!-- ثبت سرویس‌ورکر (مسیر نسبی + آپدیت خودکار + جلوگیری از تداخل پروژه‌های دیگر) -->
+  <!-- Service worker registration for offline & auto-update -->
   <script>
-  (async () => {
-    if (!('serviceWorker' in navigator)) return;
-
-    // 1) اگر قبلاً سرویس‌ورکرِ ریشهٔ دامنه ثبت شده، آن‌را آزاد کن (تا برنامهٔ دیگری لود نشود)
-    try {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      regs.forEach(r => {
-        // سرویس‌ورکرهایی که scope ریشه دارند را حذف کن
-        const u = new URL(r.scope);
-        if (u.pathname === '/' || u.pathname === '/index.html') r.unregister();
+    if('serviceWorker' in navigator){
+      window.addEventListener('load', async () => {
+        try{
+          const reg = await navigator.serviceWorker.register('service-worker.js', { scope:'/' });
+          // Immediately skip waiting on new SW
+          if(reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
+          reg.addEventListener('updatefound', () => {
+            const nw = reg.installing;
+            nw && nw.addEventListener('statechange', () => {
+              if(nw.state === 'installed' && navigator.serviceWorker.controller){
+                nw.postMessage({ type:'SKIP_WAITING' });
+                nw.addEventListener('statechange', () => {
+                  if(nw.state === 'activated') location.reload();
+                });
+              }
+            });
+          });
+        } catch(e){
+          console.warn('SW registration failed', e);
+        }
       });
-    } catch(e){/*ignore*/}
-
-    // 2) ثبت سرویس‌ورکر همین پروژه با اسکوپ نسبی
-    try {
-      const reg = await navigator.serviceWorker.register('./service-worker.js', { scope: './' });
-
-      // آپدیت خودکار
-      function activateNow(worker){
-        if (worker) worker.postMessage({ type: 'SKIP_WAITING' });
-      }
-      if (reg.waiting) activateNow(reg.waiting);
-
-      reg.addEventListener('updatefound', () => {
-        const nw = reg.installing;
-        if (!nw) return;
-        nw.addEventListener('statechange', () => {
-          if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-            activateNow(nw);
-          }
-        });
-      });
-
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        // وقتی ورکر جدید کنترل صفحه را گرفت، یک بار رفرش نرم
-        location.reload();
-      });
-    } catch(e){
-      console.warn('SW register failed:', e);
     }
-  })();
   </script>
 
-  <!-- بکاپ/همگام‌سازی آفلاین → فایل‌هایی که قبلاً ساختیم -->
-  <script type="module" src="./backup.js"></script>
+  <!-- Application logic: Supabase realtime, offline queue, backup -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    // Replace with your own Supabase project details
+    const SUPABASE_URL = 'https://poubooxbvvzbwyjlfmaj.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const serviceInput = document.getElementById('service');
+    const priceInput   = document.getElementById('price');
+    const addBtn       = document.getElementById('addBtn');
+    const syncBtn      = document.getElementById('syncBtn');
+    const pricesBody   = document.getElementById('pricesBody');
+    const QUEUE_KEY    = 'offlinePrices';
+
+    // Render price rows
+    function renderRows(rows){
+      if(!rows || rows.length === 0){
+        pricesBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);">هنوز قیمتی ثبت نشده است.</td></tr>';
+        return;
+      }
+      pricesBody.innerHTML = '';
+      rows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = \`
+          <td>\${row.service}</td>
+          <td>\${row.price}</td>
+          <td><button data-id="\${row.id}">ویرایش</button></td>
+        \`;
+        tr.querySelector('button').addEventListener('click', () => editRow(row));
+        pricesBody.appendChild(tr);
+      });
+    }
+
+    // Load initial data and subscribe to realtime updates
+    async function loadPrices(){
+      const { data, error } = await supabase.from('prices').select('*').order('id');
+      if(!error) renderRows(data);
+    }
+    const channel = supabase.channel('public:prices')
+      .on('postgres_changes', { event:'*', schema:'public', table:'prices' }, payload => {
+        loadPrices();
+      });
+    await channel.subscribe();
+    loadPrices();
+
+    // Add or update a price
+    addBtn.addEventListener('click', async () => {
+      const service = serviceInput.value.trim();
+      const price   = parseInt(priceInput.value, 10);
+      if(!service || !price) return alert('اطلاعات را کامل وارد کنید.');
+      const record = { service, price };
+      try{
+        const { error } = await supabase.from('prices').upsert(record);
+        if(error) throw error;
+        serviceInput.value = '';
+        priceInput.value = '';
+      }catch(err){
+        // Save offline if network fails
+        const queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+        queue.push(record);
+        localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+        serviceInput.value = '';
+        priceInput.value = '';
+        alert('ثبت موقت شد. پس از اتصال، همگام می‌شود.');
+      }
+    });
+
+    // Edit existing record
+    async function editRow(row){
+      const newPrice = prompt('قیمت جدید را وارد کنید:', row.price);
+      if(!newPrice) return;
+      const priceInt = parseInt(newPrice, 10);
+      if(Number.isNaN(priceInt)) return alert('قیمت نامعتبر است.');
+      try{
+        const { error } = await supabase.from('prices').update({ price: priceInt }).eq('id', row.id);
+        if(error) throw error;
+      }catch(err){
+        alert('بروزرسانی انجام نشد. بعداً دوباره تلاش کنید.');
+      }
+    }
+
+    // Synchronize offline queue with server
+    async function syncQueue(){
+      const queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+      if(queue.length === 0) return alert('صف آفلاین خالی است.');
+      for(const item of queue){
+        try{
+          await supabase.from('prices').upsert(item);
+        }catch{}
+      }
+      localStorage.removeItem(QUEUE_KEY);
+      alert('همه رکوردهای آفلاین همگام شدند.');
+    }
+    syncBtn.addEventListener('click', syncQueue);
+    window.addEventListener('load', syncQueue);
+  </script>
 </body>
 </html>
