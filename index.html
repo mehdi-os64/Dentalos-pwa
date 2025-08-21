@@ -1,272 +1,397 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>DentMaster 2025 • DentalOS PWA</title>
-  <meta name="theme-color" content="#0b1020" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>DentMaster 2025 • قیمت‌ها (آنلاین + آفلاین + بک‌آپ)</title>
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/tooth-180.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="DentMaster 2025">
+<!-- رنگ نوار مرورگر و PWA -->
+<meta name="theme-color" content="#0b1020" />
+<link rel="manifest" href="/manifest.webmanifest" />
 
-  <style>
-    :root{
-      --bg:#0b1020; --glass:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
-      --text:#eaf3ff; --muted:#b6c2d1; --accent:#00e5ff; --stroke:rgba(255,255,255,.18);
-      --radius:16px; --blur:18px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:ui-rounded,"Vazirmatn","IRANSans",system-ui,-apple-system,Segoe UI,Roboto;
-      color:var(--text);
-      background:
-        radial-gradient(60rem 60rem at 10% -10%, rgba(61,201,255,.08), transparent 70%),
-        radial-gradient(50rem 50rem at 110% 10%, rgba(0,255,188,.08), transparent 70%),
-        linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0b1020 100%) fixed;
-      overflow-x:hidden;
-    }
-    .wrap{max-width:920px;margin:24px auto;padding:0 16px}
-    header{display:flex;align-items:center;gap:12px}
-    .dot{width:10px;height:10px;border-radius:50%;background:#27e36a;box-shadow:0 0 8px #27e36a}
-    h1{margin:0;font-size:24px;letter-spacing:.2px}
-    .card{background:var(--glass); backdrop-filter:blur(var(--blur)); border:1px solid var(--stroke);
-      border-radius:var(--radius); padding:16px; margin-top:16px}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .row > *{flex:1 1 220px}
-    input,button{
-      height:44px; width:100%; border-radius:12px; border:1px solid var(--stroke);
-      background:rgba(255,255,255,.06); color:var(--text); padding:0 12px; outline:0;
-    }
-    button{cursor:pointer; border:1px solid rgba(0,229,255,.35); background:linear-gradient(180deg,rgba(0,229,255,.15),rgba(0,229,255,.05))}
-    table{width:100%; border-collapse:separate; border-spacing:0 8px}
-    th,td{padding:12px 14px; text-align:right}
-    th{color:var(--muted); font-weight:600}
-    tr{background:rgba(255,255,255,.04); border:1px solid var(--stroke)}
-    tr, td{border-radius:10px}
-    .muted{color:var(--muted)}
-    .toolbar{display:flex; gap:8px; align-items:center}
-    .badge{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;font-size:12px;border:1px solid var(--stroke);border-radius:999px;color:var(--muted)}
-    .link{color:var(--accent);text-decoration:none}
-    .tiny{font-size:12px}
-  </style>
+<!-- آیکون‌ها (اختیاری – اگر داری) -->
+<link rel="apple-touch-icon" href="/icons/tooth-192.png" />
+
+<style>
+  :root{
+    --bg:#0b1020;--glass:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04));
+    --stroke:rgba(255,255,255,.18);--text:#eaf3ff;--muted:#b6c2d1;--accent:#00e5ff;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:ui-rounded,"Vazirmatn","IRANSans",system-ui,-apple-system,Segoe UI,Roboto;
+    color:var(--text);
+    background:
+      radial-gradient(60rem 60rem at 10% -10%, rgba(61,110,255,.25), transparent 60%),
+      radial-gradient(50rem 50rem at 110% 10%, rgba(0,230,230,.18), transparent 60%),
+      linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0e1226 100%);
+    overflow:hidden;
+  }
+  .wrap{position:fixed;inset:0;display:grid;grid-template-rows:auto auto 1fr auto;gap:12px;padding:14px}
+
+  .top{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+    background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+    border:1px solid var(--stroke);border-radius:16px;padding:10px 12px;
+  }
+  .brand{display:flex;align-items:center;gap:10px}
+  .badge{font-weight:900;background:rgba(255,255,255,.12);border:1px solid var(--stroke);padding:4px 8px;border-radius:10px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#f43;box-shadow:0 0 0 2px rgba(255,255,255,.15) inset}
+  .dot.online{background:#16c784}
+  .ver{font-size:12px;opacity:.85}
+
+  .card{
+    border:1px solid var(--stroke);border-radius:16px;padding:12px;background:var(--glass);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  .row{display:flex;flex-wrap:wrap;gap:10px}
+  .row > *{flex:1 1 180px}
+  input{width:100%;border-radius:12px;border:1px solid var(--stroke);background:rgba(255,255,255,.06);color:#fff;padding:10px 12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--stroke);background:rgba(255,255,255,.10);color:#fff;cursor:pointer}
+  .btn.accent{background:linear-gradient(135deg,#7ad8ff,#7ef2e0);color:#001018;border-color:transparent}
+
+  .help{font-size:12px;opacity:.85}
+  .tbl{overflow:auto;height:100%}
+  table{width:100%;border-collapse:separate;border-spacing:0 8px}
+  th,td{text-align:center;padding:12px}
+  th{opacity:.8}
+  tr{background:rgba(255,255,255,.06);border:1px solid var(--stroke)}
+  tr td:first-child,tr th:first-child{border-radius:12px 0 0 12px}
+  tr td:last-child,tr th:last-child{border-radius:0 12px 12px 0}
+  .muted{opacity:.7}
+  .mini{font-size:12px;opacity:.8}
+  .footer{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <span class="dot" id="onlineDot" title="online"></span>
-      <h1>DentMaster 2025</h1>
-      <span class="badge" id="verBadge">v<span id="appVersion">1</span></span>
-      <a class="badge link tiny" href="#" id="syncBtn">سینک آفلاین‌ها</a>
-      <span class="badge tiny" id="updateBadge" style="display:none">درحال به‌روزرسانی…</span>
-    </header>
-
-    <!-- ورودی‌ها -->
-    <div class="card">
-      <div class="row">
-        <input id="titleInput" placeholder="نام خدمت (مثلاً: کامپوزیت)">
-        <input id="priceInput" inputmode="numeric" placeholder="قیمت (تومان)">
-      </div>
-      <div class="row" style="margin-top:12px">
-        <div class="toolbar" style="flex:1">
-          <button id="addBtn">افزودن/ثبت</button>
-          <button id="syncOfflineBtn">سینک آفلاین‌ها</button>
-        </div>
-      </div>
-      <p class="muted tiny" style="margin:10px 2px 0">
-        تغییراتی که منشی یا شما ثبت کنید، بلافاصله روی تمام گوشی‌ها نمایش می‌شود (Realtime). در حالت آفلاین، در صف ذخیره می‌شود و با اتصال، خودکار اعمال می‌گردد.
-      </p>
+<div class="wrap">
+  <!-- هدر -->
+  <div class="top">
+    <div class="brand">
+      <div class="dot" id="netDot" title="وضعیت شبکه"></div>
+      <div style="font-weight:900;font-size:18px">DentMaster 2025</div>
+      <span class="badge">قیمت‌ها</span>
+      <span class="ver">v1</span>
     </div>
-
-    <!-- لیست قیمت‌ها -->
-    <div class="card">
-      <div class="toolbar" style="justify-content:space-between;margin-bottom:6px">
-        <strong>لیست قیمت‌ها</strong>
-        <span class="muted tiny">تعداد <span id="count">0</span> مورد</span>
-      </div>
-      <div class="muted tiny" id="emptyRow" style="padding:14px;border:1px dashed var(--stroke);border-radius:10px;display:none">
-        هنوز قیمتی ثبت نشده است.
-      </div>
-      <table id="pricesTable">
-        <thead>
-          <tr><th>نام خدمت</th><th>قیمت (تومان)</th><th>ویرایش</th></tr>
-        </thead>
-        <tbody id="pricesTbody"></tbody>
-      </table>
+    <div class="row" style="flex:0 0 auto;gap:8px">
+      <button class="btn" id="btnSync">↺ سینک آفلاین‌ها</button>
+      <button class="btn" id="btnBackup">⬇︎ بک‌آپ (JSON)</button>
+      <button class="btn" id="btnUploadBackup" title="نیاز به Bucket: backups در Supabase">☁︎ آپلود بک‌آپ</button>
+      <button class="btn" id="btnRefresh">🔄 بررسی آپدیت</button>
     </div>
+  </div>
 
-    <p class="muted tiny" style="text-align:center;margin:22px 0 8px">
-      DentalOS • PWA • Supabase Realtime • Backup & Auto‑Update
+  <!-- فرم -->
+  <div class="card">
+    <div class="row">
+      <input id="title" placeholder="نام خدمت (مثلاً: کامپوزیت)" />
+      <input id="price" placeholder="قیمت (تومان)" inputmode="numeric" />
+      <button class="btn accent" id="btnAdd">افزودن/ثبت</button>
+    </div>
+    <p class="help" style="margin:.6rem 0 0">
+      تغییرات شما یا منشی روی تمام گوشی‌ها به‌صورت <b>Realtime</b> نمایش داده می‌شود. اگر آفلاین باشی، در صف ذخیره می‌شود و با اتصال، خودکار سینک می‌گردد.
     </p>
   </div>
 
-  <!-- ============== Scripts ============== -->
-  <!-- Supabase CDN -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- جدول -->
+  <div class="card tbl">
+    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div><b>لیست قیمت‌ها</b> • <span class="mini">تعداد <span id="count">0</span> مورد</span></div>
+      <div class="mini muted" id="syncInfo">—</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>نام خدمت</th>
+          <th>قیمت (تومان)</th>
+          <th>ویرایش</th>
+        </tr>
+      </thead>
+      <tbody id="list">
+        <tr><td colspan="3" class="muted">هنوز قیمتی ثبت نشده است.</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-  <script>
-    /* ==== تنظیمات نسخه و آپدیت خودکار ==== */
-    const LOCAL_VERSION_KEY = 'dentalos_version';
-    const APP_VERSION = 1;           // هر بار که تغییر مهم می‌دی، این را +1 کن
-    document.getElementById('appVersion').textContent = APP_VERSION;
-    localStorage.setItem(LOCAL_VERSION_KEY, String(APP_VERSION));
+  <!-- فوتر -->
+  <div class="footer">
+    <span class="mini muted">DentalOS • PWA • Supabase Realtime • Backup & Auto‑Update</span>
+    <span class="mini" id="lastSaved">—</span>
+  </div>
+</div>
 
-    async function checkForUpdates(){
-      try{
-        const res = await fetch('latest.json', {cache:'no-store'});
-        if(!res.ok) return;
-        const meta = await res.json(); // {version, timestamp}
-        if(Number(meta.version) > APP_VERSION){
-          document.getElementById('updateBadge').style.display = 'inline-flex';
-          // به سرویس‌ورکر بگو نسخه جدید فعال شود
-          if(navigator.serviceWorker?.controller){
-            navigator.serviceWorker.controller.postMessage({type:'SKIP_WAITING'});
-          }
-          setTimeout(()=>location.reload(), 1200);
-        }
-      }catch(_){}
-    }
-
-    /* ==== رجیستر سرویس‌ورکر + مدیریت آپدیت ==== */
-    if('serviceWorker' in navigator){
-      window.addEventListener('load', async () => {
-        try{
-          const reg = await navigator.serviceWorker.register('./service-worker.js', {scope:'./'});
-          if(reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
-          reg.addEventListener('updatefound', ()=>{
-            const nw = reg.installing;
-            nw && nw.addEventListener('statechange', ()=>{
-              if(nw.state==='installed' && navigator.serviceWorker.controller){
-                nw.postMessage({type:'SKIP_WAITING'});
-                nw.addEventListener('statechange', ()=>{
-                  if(nw.state==='activated') location.reload();
-                });
-              }
+<!-- رجیستر سرویس‌ورکر با Auto-Update -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
+      // اگر ورکر جدید آمادهٔ replace شد
+      function activateWaiting(sw){ sw && sw.postMessage({type:'SKIP_WAITING'}); }
+      if (reg.waiting) activateWaiting(reg.waiting);
+      reg.addEventListener('updatefound', () => {
+        const nw = reg.installing;
+        nw && nw.addEventListener('statechange', () => {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+            activateWaiting(nw);
+            nw.addEventListener('statechange', () => {
+              if (nw.state === 'activated') location.reload();
             });
-          });
-        }catch(e){ console.warn('SW register failed', e); }
-        checkForUpdates();
+          }
+        });
       });
-    }
-
-    /* ==== وضعیت آنلاین/آفلاین ==== */
-    const dot = document.getElementById('onlineDot');
-    function paintOnline(){ dot.style.background = navigator.onLine ? '#27e36a' : '#ffb020'; }
-    addEventListener('online', paintOnline);
-    addEventListener('offline', paintOnline);
-    paintOnline();
-
-    /* ==== Supabase init (با مقادیر تو) ==== */
-    const SUPABASE_URL = "https://poubooxbvvzbwyjlfmaj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ";
-    const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    /* ==== صف آفلاین ساده ==== */
-    const QKEY = 'dentalos_offline_queue'; // آرایه‌ای از عملیات {op:"upsert", row:{id,title,price}}
-    const queue = JSON.parse(localStorage.getItem(QKEY) || '[]');
-    function saveQueue(){ localStorage.setItem(QKEY, JSON.stringify(queue)); }
-
-    async function flushQueue(){
-      if(!navigator.onLine || !queue.length) return;
-      try{
-        const batch = [...queue];
-        const { data, error } = await supa.from('prices').upsert(batch.map(x=>x.row), {onConflict:'id'});
-        if(!error){
-          queue.length = 0; saveQueue();
-        }
-      }catch(e){ console.warn('flush err', e); }
-    }
-    addEventListener('online', flushQueue);
-
-    /* ==== بک‌آپ اتوماتیک (Local + Supabase Storage) ==== */
-    const BK_KEY = 'dentalos_backup_prices';
-    async function backupCloud(json){
-      try{
-        const fname = `backup_${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
-        const blob = new Blob([json], {type:'application/json'});
-        // نیاز به باکت public به نام "backups" (در Supabase Storage بساز)
-        await supa.storage.from('backups').upload(fname, blob, {contentType:'application/json', upsert:false});
-      }catch(e){ console.warn('cloud backup fail', e); }
-    }
-
-    /* ==== UI helper ==== */
-    const $ = s => document.querySelector(s);
-    const tbody = $('#pricesTbody'), countEl = $('#count'), emptyRow = $('#emptyRow');
-
-    function renderRows(rows){
-      tbody.innerHTML = '';
-      if(!rows || !rows.length){ emptyRow.style.display='block'; countEl.textContent = '0'; return; }
-      emptyRow.style.display='none';
-      countEl.textContent = String(rows.length);
-      for(const r of rows){
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${r.title ?? ''}</td>
-          <td>${(r.price ?? '').toLocaleString('fa-IR')}</td>
-          <td><button data-id="${r.id}">ویرایش</button></td>`;
-        tbody.appendChild(tr);
+      // تلاش برای Background Sync (اختیاری)
+      if ('sync' in reg) {
+        window._dos_requestSync = async ()=>{ try{ await reg.sync.register('sync-prices'); }catch{} };
       }
-      // دکمه‌های ویرایش (در این نسخه فقط نمایش می‌دهیم)
-      tbody.querySelectorAll('button[data-id]').forEach(btn=>{
-        btn.onclick = ()=> alert('ویرایش سریع: در نسخه کامل فرم ویرایش باز می‌شود.');
-      });
+    } catch (e) { console.warn('SW register failed', e); }
+  });
+}
+</script>
+
+<!-- Supabase + منطق آنلاین/آفلاین/بک‌آپ -->
+<script type="module">
+/* ====== اتصال به Supabase (ESM CDN) ====== */
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+/* === تنظیمات شما === */
+const SUPABASE_URL = "https://poubooxbvvzbwyjlfmaj.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvdWJvb3hidnZ6Ynd5amxmbWFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NDgxODUsImV4cCI6MjA3MTMyNDE4NX0.aaLn3sqzRr87zFegPqJyrrsbLrK5IF9JpdDjezpsTrQ";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* === DOM === */
+const $ = s => document.querySelector(s);
+const list = $("#list");
+const countEl = $("#count");
+const dot = $("#netDot");
+const info = $("#syncInfo");
+const lastSaved = $("#lastSaved");
+
+/* === ذخیره‌ساز آفلاین === */
+const DB = {
+  get(k, d){ try{ return JSON.parse(localStorage.getItem(k) ?? JSON.stringify(d)); }catch{ return d; } },
+  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+};
+const KEY_CACHE = "PRICES_CACHE_V1";      // لیست کش محلی
+const KEY_OUTBOX = "PRICES_OUTBOX_V1";    // صف عملیات آفلاین
+
+/* === وضعیت شبکه === */
+function updateDot(){
+  dot.classList.toggle('online', navigator.onLine);
+  dot.title = navigator.onLine ? "آنلاین" : "آفلاین";
+}
+addEventListener('online',  ()=>{ updateDot(); flushOutbox(); });
+addEventListener('offline', ()=>{ updateDot(); });
+
+/* === UI === */
+function rials(x){
+  if (x == null || x === "") return "";
+  const s = String(x).replace(/[^\d]/g,'');
+  return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+function render(rows){
+  list.innerHTML = "";
+  if (!rows?.length){ list.innerHTML = `<tr><td colspan="3" class="muted">هنوز قیمتی ثبت نشده است.</td></tr>`; countEl.textContent = "0"; return; }
+  countEl.textContent = rows.length;
+  rows.forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHTML(r.title || r.name || "")}</td>
+      <td>${rials(r.price || r.amount || r.fee || "")}</td>
+      <td>
+        <button class="btn" data-edit="${r.id ?? ""}">ویرایش</button>
+        <button class="btn" data-del="${r.id ?? ""}" style="margin-inline-start:6px">حذف</button>
+      </td>`;
+    list.appendChild(tr);
+  });
+  // رویدادهای ویرایش/حذف
+  list.querySelectorAll('[data-edit]').forEach(b=>{
+    b.onclick = ()=>{
+      const id = b.getAttribute('data-edit');
+      const row = (DB.get(KEY_CACHE,[])).find(x=> String(x.id)===String(id));
+      if(!row) return;
+      $("#title").value = row.title || row.name || "";
+      $("#price").value = row.price || row.amount || "";
+      $("#btnAdd").dataset.editing = id;
+      $("#btnAdd").textContent = "ذخیره ویرایش";
+    };
+  });
+  list.querySelectorAll('[data-del]').forEach(b=>{
+    b.onclick = ()=> removeItem(b.getAttribute('data-del'));
+  });
+}
+function escapeHTML(s){ return String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+/* === بارگذاری از Supabase با فُلس‌بک مرتب‌سازی === */
+async function loadRemote(){
+  let q = supabase.from('prices').select('*');
+  // ابتدا created_at، اگر نبود بیفت روی id
+  let { data, error } = await q.order('created_at',{ascending:false});
+  if(error){ ({ data, error } = await supabase.from('prices').select('*').order('id',{ascending:false})); }
+  if(error){ throw error; }
+  DB.set(KEY_CACHE, data);
+  render(data);
+  info.textContent = "بارگذاری از سرور ✓";
+}
+
+/* === افزودن/ویرایش === */
+async function upsertOnline(rec){
+  // اگر id داشت => update
+  if(rec.id){
+    const { error } = await supabase.from('prices').update({ title:rec.title, price:Number(rec.price) })
+      .eq('id', rec.id);
+    if(error) throw error;
+  }else{
+    const { error } = await supabase.from('prices').insert({ title:rec.title, price:Number(rec.price) });
+    if(error) throw error;
+  }
+}
+async function addOrEdit(){
+  const title = $("#title").value.trim();
+  const price = $("#price").value.trim();
+  if(!title || !price){ flash('نام و قیمت را کامل کن'); return; }
+
+  const editingId = $("#btnAdd").dataset.editing || null;
+  const rec = { id: editingId, title, price: Number(price.replace(/[^\d]/g,'')) };
+
+  if(navigator.onLine){
+    try{
+      await upsertOnline(rec);
+      $("#btnAdd").dataset.editing = "";
+      $("#btnAdd").textContent = "افزودن/ثبت";
+      $("#title").value=""; $("#price").value="";
+      await loadRemote();
+      touchSaved();
+    }catch(e){
+      // اگر آنلاین خطا داد، بنداز تو صف آفلاین
+      queueOp({ type: editingId?'update':'insert', rec });
+      flash('ثبت در صف آفلاین؛ با اتصال سینک می‌شود');
     }
-
-    /* ==== بارگذاری اولیه + ذخیره محلی جهت بک‌آپ ==== */
-    async function loadPrices(){
-      try{
-        const { data, error } = await supa.from('prices').select('*').order('created_at', {ascending:false});
-        if(error) throw error;
-        renderRows(data);
-        localStorage.setItem(BK_KEY, JSON.stringify(data)); // بک‌آپ محلی
-      }catch(e){
-        // آفلاین: از بک‌آپ محلی نمایش بده
-        const cached = JSON.parse(localStorage.getItem(BK_KEY) || '[]');
-        renderRows(cached);
-      }
+  }else{
+    queueOp({ type: editingId?'update':'insert', rec });
+    // فوری داخل کش محلی هم به‌روز کنیم
+    const cache = DB.get(KEY_CACHE,[]);
+    if(editingId){
+      const ix = cache.findIndex(x=> String(x.id)===String(editingId));
+      if(ix>-1) cache[ix] = { ...cache[ix], title:rec.title, price:rec.price };
+    }else{
+      cache.unshift({ id: "temp_"+Date.now(), title:rec.title, price:rec.price });
     }
+    DB.set(KEY_CACHE, cache); render(cache);
+    $("#btnAdd").dataset.editing = "";
+    $("#btnAdd").textContent = "افزودن/ثبت";
+    $("#title").value=""; $("#price").value="";
+    flash('(آفلاین) در صف ذخیره شد');
+  }
+}
+$("#btnAdd").onclick = addOrEdit;
 
-    /* ==== Realtime: هر تغییری رو زنده اعمال کن ==== */
-    const channel = supa.channel('prices-ch')
-      .on('postgres_changes', {event: '*', schema: 'public', table: 'prices'}, (payload) => {
-        loadPrices();
-      }).subscribe();
-
-    /* ==== افزودن قیمت ==== */
-    async function addPrice(){
-      const title = $('#titleInput').value.trim();
-      const raw = $('#priceInput').value.replace(/[^\d]/g,'');
-      if(!title || !raw){ alert('نام خدمت و قیمت را وارد کنید'); return; }
-      const price = Number(raw);
-      const row = { title, price };
-
-      if(navigator.onLine){
-        const { error } = await supa.from('prices').insert(row);
-        if(error){ alert('خطا در ثبت آنلاین'); return; }
-        await loadPrices();
-        // بک‌آپ ابری
-        const snapshot = localStorage.getItem(BK_KEY) || '[]';
-        backupCloud(snapshot);
-      }else{
-        // صف آفلاین
-        queue.push({op:'upsert', row:{ id: crypto.randomUUID(), ...row }});
-        saveQueue();
-        alert('آفلاین هستید؛ مورد به صف اضافه شد و با اتصال، خودکار سینک می‌شود.');
-      }
-      $('#titleInput').value=''; $('#priceInput').value='';
+/* === حذف === */
+async function removeItem(id){
+  if(!id) return;
+  if(navigator.onLine){
+    try{
+      const { error } = await supabase.from('prices').delete().eq('id', id);
+      if(error) throw error;
+      await loadRemote();
+      touchSaved();
+    }catch(e){
+      queueOp({ type:'delete', rec:{ id } });
+      flash('حذف در صف آفلاین قرار گرفت');
     }
+  }else{
+    queueOp({ type:'delete', rec:{ id } });
+    const cache = DB.get(KEY_CACHE,[]).filter(x=> String(x.id)!==String(id));
+    DB.set(KEY_CACHE, cache); render(cache);
+    flash('(آفلاین) حذف در صف');
+  }
+}
 
-    /* ==== رویدادها ==== */
-    $('#addBtn').onclick = addPrice;
-    $('#syncOfflineBtn').onclick = flushQueue;
-    $('#syncBtn').onclick = (e)=>{ e.preventDefault(); flushQueue(); };
+/* === صف آفلاین === */
+function queueOp(op){
+  const box = DB.get(KEY_OUTBOX,[]);
+  box.push({ at: Date.now(), ...op });
+  DB.set(KEY_OUTBOX, box);
+  info.textContent = `در صف: ${box.length} مورد`;
+}
+async function flushOutbox(){
+  const box = DB.get(KEY_OUTBOX,[]);
+  if(!box.length) { info.textContent = 'صف خالی است'; return; }
+  info.textContent = `در حال سینک (${box.length})…`;
+  for(const it of box){
+    try{
+      if(it.type==='insert' || it.type==='update'){ await upsertOnline(it.rec); }
+      if(it.type==='delete'){ await supabase.from('prices').delete().eq('id', it.rec.id); }
+    }catch(e){ console.warn('sync fail', e); }
+  }
+  DB.set(KEY_OUTBOX, []);
+  info.textContent = 'سینک شد ✓';
+  await loadRemote();
+  touchSaved();
+}
+$("#btnSync").onclick = flushOutbox;
 
-    // شروع
-    loadPrices();
-  </script>
+/* === Realtime: آپدیت فوری روی همه دستگاه‌ها === */
+supabase.channel('prices-realtime')
+  .on('postgres_changes', { event:'*', schema:'public', table:'prices' }, payload => {
+    // هر تغییری روی جدول -> لیست تازه‌سازی شود
+    loadRemote().catch(()=>{});
+  })
+  .subscribe();
+
+/* === بک‌آپ: دانلود JSON === */
+function download(filename, text){
+  const blob = new Blob([text], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+$("#btnBackup").onclick = async ()=>{
+  // از سرور جدیدترین رو بگیر، اگر نشد از کش
+  try{ await loadRemote(); }catch{}
+  const data = DB.get(KEY_CACHE,[]);
+  download(`prices-backup-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`, JSON.stringify(data,null,2));
+  flash('فایل بک‌آپ دانلود شد');
+};
+
+/* === بک‌آپ: آپلود به Supabase Storage (Bucket: backups) === */
+$("#btnUploadBackup").onclick = async ()=>{
+  try{
+    await loadRemote();
+    const data = DB.get(KEY_CACHE,[]);
+    const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+    const path = `prices/prices-${Date.now()}.json`;
+    const { error } = await supabase.storage.from('backups').upload(path, blob, { upsert:false, contentType:'application/json' });
+    if(error) throw error;
+    flash('روی استوریج آپلود شد ✓ (bucket: backups)');
+  }catch(e){
+    flash('آپلود نشد؛ شاید باکت/سیاست‌ها آماده نیست. فعلاً دانلود محلی را داشته باش.');
+  }
+};
+
+/* === بررسی آپدیت (سرویس‌ورکر) === */
+$("#btnRefresh").onclick = ()=>{ try{ navigator.serviceWorker.getRegistration().then(r=>r&&r.update()); }catch{} };
+
+/* === کمکی‌ها === */
+function flash(msg){
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);bottom:calc(120px + env(safe-area-inset-bottom));background:rgba(0,0,0,.6);color:#fff;padding:10px 14px;border-radius:12px;backdrop-filter:blur(8px);z-index:9999";
+  document.body.appendChild(t); setTimeout(()=>t.remove(),1600);
+}
+function touchSaved(){ lastSaved.textContent = "آخرین ذخیره: " + new Date().toLocaleTimeString('fa-IR'); }
+
+/* === راه‌اندازی اولیه === */
+(async function init(){
+  updateDot();
+  // اول تلاش از سرور – اگر نشد از کش
+  try{ await loadRemote(); }
+  catch{ render(DB.get(KEY_CACHE,[])); info.textContent = 'آفلاین: از کش محلی'; }
+})();
+</script>
 </body>
 </html>
