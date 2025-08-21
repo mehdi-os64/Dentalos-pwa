@@ -2,170 +2,240 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-
-  <title>DentalOS • V4 • PRO • Super AI + AutoTest • PWA</title>
-  <meta name="description" content="اپ مدیریت مطب دندانپزشکی با PWA، آفلاین/آنلاین، بک‌آپ خودکار و آپدیت خودکار." />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>DentMaster • DentalOS PWA</title>
   <meta name="theme-color" content="#0b1020" />
 
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.webmanifest" />
-
-  <!-- Icons -->
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/tooth-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="icons/tooth-512.png" />
-  <!-- iOS -->
-  <link rel="apple-touch-icon" href="icons/tooth-180.png" />
+  <!-- Manifest + Icons -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icons/tooth-192.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="DentalOS" />
 
-  <!-- Base styles (متغیرها + ریست سبک) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    :root{
-      --bg:#0b1020;
-      --stroke: rgba(255,255,255,.22);
-      --glass: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      --blur: 18px;
-      --text:#eaf3ff;
-      --muted:#b6c2d1;
-      --accent:#00e5ff;
-    }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%}
+    :root{--bg:#0b1020;--text:#eaf3ff;--muted:#b6c2d1;--accent:#00e5ff;--stroke:rgba(255,255,255,.22);--glass:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));--radius:16px;--blur:18px}
+    *{box-sizing:border-box} html,body{height:100%}
     body{
-      margin:0; color:var(--text);
-      font-family: ui-rounded,"Vazirmatn","IRANSans",system-ui,Segoe UI,Roboto,sans-serif;
+      margin:0;color:var(--text);font-family:"Vazirmatn",ui-rounded,system-ui;
       background:
-        radial-gradient(60rem 60rem at 10% -10%, rgba(61,118,255,.12), transparent 60%),
-        radial-gradient(50rem 50rem at 110% 10%, rgba(0,229,255,.12), transparent 60%),
+        radial-gradient(60rem 60rem at 10% -10%, rgba(61,115,255,.12), transparent 40%),
+        radial-gradient(50rem 50rem at 110% 10%, rgba(0,229,255,.10), transparent 40%),
         linear-gradient(180deg,#0a0f1f 0%,#0b1020 40%,#0b1020 100%);
-      overflow-x:hidden;
+      -webkit-tap-highlight-color:transparent
     }
-    .glass{
-      backdrop-filter: blur(var(--blur)) saturate(140%);
-      -webkit-backdrop-filter: blur(var(--blur)) saturate(140%);
-      background: var(--glass);
-      border: 1px solid var(--stroke);
-      border-radius: 16px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 30px rgba(0,0,0,.35);
-    }
-    .app-shell{max-width:1200px;margin:0 auto;padding:24px}
-    .topbar{
-      display:flex;align-items:center;gap:12px;padding:12px 16px;margin:16px 0;
-    }
-    .dot{width:8px;height:8px;border-radius:50%;background:#36d399;box-shadow:0 0 0 6px rgba(54,211,153,.15)}
-    .title{font-size:18px;font-weight:700;letter-spacing:.3px}
-    .sub{font-size:12px;color:var(--muted)}
-    .notice{margin:12px 0;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px dashed var(--stroke);color:var(--muted)}
-    noscript{display:block;margin:16px 0;padding:12px 14px;border-radius:12px;background:#2b3145;color:#fff}
+    header{position:sticky;top:0;z-index:10;backdrop-filter:blur(var(--blur)) saturate(140%);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));border-bottom:1px solid var(--stroke)}
+    .wrap{max-width:960px;margin:0 auto;padding:16px}
+    h1{margin:0;font-size:20px} .tag{display:inline-block;margin-top:6px;padding:4px 10px;border:1px solid var(--stroke);border-radius:999px;font-size:12px;color:var(--muted)}
+    .panel{margin-top:16px;padding:16px;border:1px solid var(--stroke);border-radius:var(--radius);background:var(--glass)}
+    .grid{display:grid;gap:16px} @media(min-width:800px){.grid{grid-template-columns:1.2fr .8fr}}
+    table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--stroke);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+    thead th{background:rgba(255,255,255,.06);text-align:right;color:var(--muted);font-weight:600;padding:10px}
+    tbody td{padding:10px;border-top:1px solid var(--stroke)}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    button{appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,.06);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer}
+    button.primary{background:linear-gradient(90deg,#00e5ff44,#00e5ff22)}
+    .ok{color:#75f2a0}.warn{color:#ffd66b}
+    footer{color:var(--muted);font-size:12px;margin:24px auto 32px;opacity:.8}
+    code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:6px;border:1px solid var(--stroke)}
   </style>
 </head>
-
 <body>
-  <div class="app-shell">
-    <!-- Top bar -->
-    <div class="glass topbar">
-      <div class="dot" aria-hidden="true"></div>
-      <div>
-        <div class="title">DentalOS PWA</div>
-        <div class="sub">Liquid‑Glass • آفلاین/آنلاین • آپدیت و بک‌آپ خودکار</div>
+  <header>
+    <div class="wrap">
+      <h1>DentMaster • DentalOS</h1>
+      <div class="tag">PWA • Offline • Auto‑Update • Realtime • Cloud/Local Backup</div>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <!-- لیست قیمت‌ها -->
+    <section class="panel">
+      <h2 style="margin:0 0 10px">لیست قیمت</h2>
+      <table id="priceTable">
+        <thead><tr><th>خدمت</th><th>قیمت (تومان)</th></tr></thead>
+        <tbody><!-- بوسیلهٔ Supabase پر می‌شود --></tbody>
+      </table>
+
+      <div class="controls" style="margin-top:12px">
+        <button id="btnAdd" class="primary">افزودن سطر نمونه</button>
+        <button id="btnSync">بازخوانی از سرور</button>
+        <button id="btnBackupLocal">بک‌آپ محلی</button>
+        <button id="btnRestoreLocal">بازیابی محلی</button>
+        <button id="btnBackupCloud">بک‌آپ ابری</button>
+        <button id="btnRestoreCloud">بازیابی ابری</button>
       </div>
-    </div>
 
-    <!-- پیام بدون جاوااسکریپت -->
-    <noscript>برای اجرای برنامه، جاوااسکریپت باید فعال باشد.</noscript>
+      <div class="tag" id="syncState" style="margin-top:10px">وضعیت همگام‌سازی: <span class="warn">در حال اتصال…</span></div>
+      <p style="margin-top:8px;color:var(--muted);font-size:12px">
+        هر تغییری در جدول <b>prices</b> به‌صورت آنی با Supabase Realtime روی تمام گوشی‌ها پخش می‌شود.
+      </p>
+    </section>
 
-    <!-- ===== APP CONTENT =====
-         کل بدنهٔ اپلیکیشن (Dashboard/Patients/Calendar/Finance/Inventory/AI و …)
-         خودت را اینجا قرار بده. اگر همین فایل، از قبل محتوای UI دارد،
-         همان را در این جایگاه بچسبان. -->
-    <main id="app-root">
-      <!-- محتوای فعلی‌ات را اینجا قرار بده -->
-    </main>
+    <!-- وضعیت PWA / نسخه -->
+    <aside class="panel">
+      <h3 style="margin:0 0 10px">وضعیت برنامه</h3>
+      <ul style="margin:0 0 12px 18px">
+        <li>شبکه: <span id="netState">…</span></li>
+        <li>نسخهٔ کش: <code id="swVer">ـ</code></li>
+        <li>آخرین بک‌آپ محلی: <code id="bkTimeLocal">ـ</code></li>
+        <li>آخرین بک‌آپ ابری: <code id="bkTimeCloud">ـ</code></li>
+      </ul>
+      <div class="controls">
+        <button id="btnCheckUpdate">بررسی آپدیت</button>
+      </div>
+    </aside>
+  </main>
 
-    <!-- نوتیف بار آپدیت (اختیاری) -->
-    <div id="update-bar" class="glass" style="display:none; padding:10px 14px; margin-top:14px;">
-      نسخهٔ جدید آماده است. <button id="btn-refresh" class="glass" style="padding:6px 10px;margin-inline-start:8px;">به‌روزرسانی</button>
-    </div>
+  <footer class="wrap">© 2025 DentalOS • Liquid‑Glass UI</footer>
 
-    <!-- وضعیت بک‌آپ (اختیاری) -->
-    <div id="backup-status" class="notice">بک‌آپ خودکار فعال است…</div>
-  </div>
+  <!-- Supabase v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ===== Scripts ===== -->
-
-  <!-- سرویس‌ورکر: رجیستر + آپدیت خودکار + رفرش نرم -->
   <script>
-  (() => {
-    if (!('serviceWorker' in navigator)) return;
-
-    // از مسیر نسبی استفاده می‌کنیم تا روی GitHub Pages/Netlify هم درست باشد
-    const swUrl = 'service-worker.js';
-    let reloaded = false;
-
-    async function registerSW() {
-      try {
-        const reg = await navigator.serviceWorker.register(swUrl, { scope: './' });
-
-        // اگر SW جدید آمادهٔ جایگزینی است
-        if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-
-        reg.addEventListener('updatefound', () => {
-          const nw = reg.installing;
-          if (!nw) return;
-          nw.addEventListener('statechange', () => {
-            if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-              nw.postMessage({ type: 'SKIP_WAITING' });
-            }
+    /* ---------------- PWA: Service Worker (auto-update) ---------------- */
+    (function registerSW(){
+      if(!('serviceWorker' in navigator)) return;
+      window.addEventListener('load', async () => {
+        try{
+          const reg = await navigator.serviceWorker.register('/service-worker.js',{scope:'/'});
+          const activateNow = sw => {
+            if(!sw) return;
+            sw.postMessage({type:'SKIP_WAITING'});
+            sw.addEventListener('statechange', ()=>{ if(sw.state==='activated') location.reload(); });
+          };
+          if (reg.waiting) activateNow(reg.waiting);
+          reg.addEventListener('updatefound', ()=>{
+            const nw = reg.installing;
+            nw && nw.addEventListener('statechange', ()=>{
+              if(nw.state==='installed' && navigator.serviceWorker.controller) activateNow(nw);
+            });
           });
-        });
+          navigator.serviceWorker.addEventListener('controllerchange', ()=>console.log('SW controlling'));
+        }catch(e){ console.warn('SW register failed', e); }
+      });
+    })();
+    document.getElementById('btnCheckUpdate').onclick = async () => {
+      if(!('serviceWorker' in navigator)) return;
+      const regs = await navigator.serviceWorker.getRegistrations();
+      regs.forEach(r => r.update());
+      alert('بررسی آپدیت انجام شد؛ در صورت وجود نسخهٔ جدید خودکار اعمال می‌شود.');
+    };
 
-        // وقتی کنترلر تغییر کرد، یعنی SW جدید فعال شده—یک بار رفرش نرم
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!reloaded) {
-            reloaded = true;
-            location.reload();
-          }
+    /* ---------------- کوچک‌های UI ---------------- */
+    const $ = s => document.querySelector(s);
+    const tbody = $('#priceTable tbody');
+    const setNet = () => $('#netState').textContent = navigator.onLine ? 'آنلاین ✅' : 'آفلاین ⛓️';
+    window.addEventListener('online', setNet); window.addEventListener('offline', setNet); setNet();
+
+    /* ---------------- Supabase Setup ---------------- */
+    const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";    // ← جایگزین کن
+    const SUPABASE_ANON_KEY = "YOUR-ANON-KEY";                   // ← جایگزین کن
+    const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ---------------- CRUD: جدول prices ---------------- */
+    async function loadPrices(){
+      const { data, error } = await supa.from('prices').select('*').order('id',{ascending:true});
+      if(error){ console.warn(error); return; }
+      renderRows(data||[]);
+    }
+    function renderRows(rows){
+      tbody.innerHTML='';
+      rows.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${r.name ?? ''}</td><td>${r.price ?? ''}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    $('#btnSync').onclick = loadPrices;
+    $('#btnAdd').onclick = async ()=>{
+      const name = prompt('نام خدمت؟','جرم‌گیری');
+      if(!name) return;
+      const price = prompt('قیمت؟','350000');
+      const { error } = await supa.from('prices').insert({ name, price });
+      if(error) alert('خطا: '+error.message);
+    };
+
+    // Realtime: هر تغییری روی همهٔ دستگاه‌ها اعمال می‌شود
+    function mountRealtime(){
+      const channel = supa.channel('prices-rt')
+        .on('postgres_changes',{event:'*',schema:'public',table:'prices'},payload=>{
+          loadPrices();  // تمیزترین راه
+          autoBackupLocal(); // بعد از تغییر، بک‌آپ محلی
+          queueCloudBackup(); // و صف بک‌آپ ابری
+        })
+        .subscribe(status=>{
+          $('#syncState').innerHTML = 'وضعیت همگام‌سازی: ' + (status === 'SUBSCRIBED' ? '<span class="ok">همگام</span>' : '<span class="warn">در انتظار…</span>');
         });
-      } catch (err) {
-        console.error('SW register failed:', err);
-      }
     }
 
-    // نمایش نوار «نسخه جدید» اگر latest.json تغییر کند
-    async function watchLatest() {
-      const BAR = document.getElementById('update-bar');
-      const BTN = document.getElementById('btn-refresh');
-      let last = localStorage.getItem('dentalos_latest_ver');
+    /* ---------------- Backup محلی ---------------- */
+    const BK_LOCAL_KEY = 'dentalos_backup_v1';
+    function collectRows(){
+      return [...tbody.querySelectorAll('tr')].map(tr=>{
+        const tds = tr.querySelectorAll('td');
+        return { name: tds[0]?.textContent || '', price: tds[1]?.textContent || '' };
+      });
+    }
+    function backupLocal(){
+      const payload = { ts: Date.now(), rows: collectRows() };
+      localStorage.setItem(BK_LOCAL_KEY, JSON.stringify(payload));
+      $('#bkTimeLocal').textContent = new Date(payload.ts).toLocaleString('fa-IR');
+      return payload;
+    }
+    function restoreLocal(){
+      const raw = localStorage.getItem(BK_LOCAL_KEY);
+      if(!raw) return alert('بک‌آپ محلی پیدا نشد');
+      const payload = JSON.parse(raw||'{}');
+      renderRows(payload.rows||[]);
+      $('#bkTimeLocal').textContent = new Date(payload.ts||Date.now()).toLocaleString('fa-IR');
+    }
+    function autoBackupLocal(){ try{ backupLocal(); }catch{} }
+    $('#btnBackupLocal').onclick = backupLocal;
+    $('#btnRestoreLocal').onclick = restoreLocal;
+    setInterval(autoBackupLocal, 30000); // هر ۳۰ ثانیه
 
-      async function check() {
-        try {
-          const r = await fetch('latest.json', { cache: 'no-store' });
-          if (!r.ok) return;
-          const j = await r.json();
-          const curr = String(j.version || '');
-          if (last && curr && last !== curr) {
-            BAR.style.display = 'block';
-            BTN.onclick = () => location.reload();
-          }
-          if (curr) localStorage.setItem('dentalos_latest_ver', curr);
-          last = curr;
-        } catch {}
-      }
-      // بار اول + هر 60 ثانیه
-      check();
-      setInterval(check, 60000);
+    /* ---------------- Backup ابری (Supabase Storage) ---------------- */
+    // پیش‌نیاز: Bucket به نام `backups` و سیاست‌هایی که اجازه INSERT/UPDATE/SELECT روی مسیر clinic/* بدهد.
+    const BK_BUCKET = 'backups';
+    const BK_OBJECT_KEY = 'clinic/backup.json'; // اگر می‌خواهی برای هر مطب جدا باشد، مسیر را سفارشی کن
+
+    async function backupCloud(){
+      const payload = backupLocal(); // از خروجی بک‌آپ محلی استفاده می‌کنیم
+      const blob = new Blob([JSON.stringify(payload)], {type:'application/json'});
+      const { error } = await supa.storage.from(BK_BUCKET).upload(BK_OBJECT_KEY, blob, { upsert:true, contentType:'application/json' });
+      if(error) throw error;
+      $('#bkTimeCloud').textContent = new Date(payload.ts).toLocaleString('fa-IR');
+      return true;
+    }
+    async function restoreCloud(){
+      const { data, error } = await supa.storage.from(BK_BUCKET).download(BK_OBJECT_KEY);
+      if(error){ alert('بازیابی ابری ناموفق: '+error.message); return; }
+      const payload = JSON.parse(await data.text());
+      renderRows(payload.rows||[]);
+      $('#bkTimeCloud').textContent = new Date(payload.ts||Date.now()).toLocaleString('fa-IR');
+    }
+    $('#btnBackupCloud').onclick = async ()=>{ try{ await backupCloud(); alert('بک‌آپ ابری ذخیره شد.'); }catch(e){ alert('خطا در بک‌آپ ابری: '+e.message); } };
+    $('#btnRestoreCloud').onclick = restoreCloud;
+
+    // بک‌آپ ابری دوره‌ای (هر ۲ دقیقه) فقط وقتی آنلاینیم
+    let cloudTimer = setInterval(()=>{ if(navigator.onLine) queueCloudBackup(); }, 120000);
+    let cloudQueued = false;
+    function queueCloudBackup(){
+      if(cloudQueued) return;
+      cloudQueued = true;
+      setTimeout(async ()=>{ cloudQueued=false; if(navigator.onLine){ try{ await backupCloud(); }catch{} } }, 5000);
     }
 
-    window.addEventListener('load', () => {
-      registerSW();
-      watchLatest();
-    });
-  })();
+    /* ---------------- شروع ---------------- */
+    (async function start(){
+      await loadPrices();
+      mountRealtime();
+      try{ const keys = await caches.keys(); $('#swVer').textContent = keys.join(', '); }catch{}
+    })();
   </script>
-
-  <!-- بک‌آپ/سنک ماژولار -->
-  <script type="module" src="backup.js"></script>
 </body>
 </html>
